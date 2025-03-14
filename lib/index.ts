@@ -1,4 +1,4 @@
-import KnFormStringInputField from "./components/fields/KnFormStringInputField";
+import KnFormStringInputField from "./components/fields/KnFormStringInputField.vue";
 import KnFormInputFieldWrapper from "./components/KnFormInputFieldWrapper";
 import FormLayout from "./components/FormLayout.vue";
 import "./types";

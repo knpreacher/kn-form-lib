@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue';
-import { KnFormInputFieldWrapper } from '../dist/kn-form';
+import { KnFormInputFieldWrapper, KnFormStringInputField } from '../dist/index';
 
-KnFormInputFieldWrapper
 const testText = ref('test');
 </script>
 
@@ -18,7 +17,8 @@ const testText = ref('test');
   </div>
   <HelloWorld msg="Vite + Vue" />
   <div v-text="testText"></div>
-  <kn-form-input-field-wrapper data-type="string" />
+  <kn-form-input-field-wrapper  />
+  <kn-form-string-input-field  />
 </template>
 
 <style scoped>

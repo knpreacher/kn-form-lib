@@ -7,7 +7,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   resolve: {
     alias: {
-      "lib/": resolve(__dirname, "./lib"),
+      "lib": resolve(__dirname, "./lib"),
     },
   },
   plugins: [vue(), dts({ insertTypesEntry: true, tsconfigPath: "./tsconfig.lib.json" })],
@@ -18,8 +18,8 @@ export default defineConfig({
     },
     lib: {
       name: "KnForm",
-      fileName: "kn-form",
-      entry: resolve(__dirname, "lib/main.ts"),
+      fileName: "index",
+      entry: resolve(__dirname, "lib/index.ts"),
       formats: ["es", "cjs"],
     },
   },
