@@ -1,12 +1,12 @@
 import { defineComponent, h } from "vue";
 import type { KnFormStringInputFieldProps } from "../../types";
 import { QInput } from "quasar";
-import type { VModelEmitterOption } from "../../utils/useVModel";
+import type { VModelComponentEmitOption } from "../../utils/useVModel";
 
-export default defineComponent(
+export default defineComponent<KnFormStringInputFieldProps, VModelComponentEmitOption>(
   (
-    props: KnFormStringInputFieldProps,
-    { emit }: { emit: VModelEmitterOption<string> }
+    props,
+    { emit }
   ) => {
     return () =>
       h(QInput, {

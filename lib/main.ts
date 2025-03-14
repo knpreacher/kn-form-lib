@@ -1,4 +1,5 @@
 import KnFormStringInputField from "./components/fields/KnFormStringInputField";
+import KnFormInputFieldWrapper from "./components/KnFormInputFieldWrapper";
 import FormLayout from "./components/FormLayout.vue";
 import "./types";
 export interface KnForm {
@@ -17,4 +18,4 @@ export const KnForm: KnFormGenerator = {
   },
 };
 
-export { FormLayout, KnFormStringInputField };
+export { FormLayout, KnFormInputFieldWrapper, KnFormStringInputField };

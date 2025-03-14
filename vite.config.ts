@@ -10,7 +10,7 @@ export default defineConfig({
       "lib/": resolve(__dirname, "./lib"),
     },
   },
-  plugins: [vue(), dts({ tsconfigPath: "./tsconfig.lib.json" })],
+  plugins: [vue(), dts({ insertTypesEntry: true, tsconfigPath: "./tsconfig.lib.json" })],
   build: {
     copyPublicDir: false,
     rollupOptions: {
@@ -20,7 +20,7 @@ export default defineConfig({
       name: "KnForm",
       fileName: "kn-form",
       entry: resolve(__dirname, "lib/main.ts"),
-      formats: ["es"],
+      formats: ["es", "cjs"],
     },
   },
 });

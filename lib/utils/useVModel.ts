@@ -5,6 +5,7 @@ export const MODEL_DEFAULT_EMIT = 'update:modelValue'
 
 export declare type VModelEmitter<T = unknown> = { 'update:modelValue': [value: T] }
 export declare type VModelEmitterOption<T = unknown> = ((evt: 'update:modelValue', value: T) => void)
+export declare type VModelComponentEmitOption<T = unknown> = { 'update:modelValue': (value: T) => void }
 export declare type VModelProps<T = unknown> = { modelValue: T, defaultValue?: T }
 export declare type VModelPartialProps<T = unknown> = Partial<VModelProps<T>>
 
