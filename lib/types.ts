@@ -52,7 +52,11 @@ export declare type KnFormDataType =
   | 'bool'
   | 'bool_switch'
 
-export interface KnFormAbstractField<InputPropsType = object> {
+export type KnFormModelData = Record<string, any>
+
+export declare type FieldShowConditionFunction<T extends KnFormModelData = KnFormModelData> = (allData: T) => boolean
+
+export interface KnFormAbstractField<InputPropsType = Record<string, any>> {
   /**
    * The key of the field (required)
    */
@@ -70,13 +74,17 @@ export interface KnFormAbstractField<InputPropsType = object> {
   wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
   untoggledValue?: any
 
+  showIf?: FieldShowConditionFunction<Record<string, any>>
+
   inputProps?: InputPropsType
 }
+
+export declare type SharedKnFormFieldData<Field = KnFormAbstractField> = Omit<Field, 'dataKey'>
 
 export declare type KnFormInputProps<
   Field = KnFormAbstractField,
   JsDataType = unknown
-> = Omit<Field, 'dataKey'> & VModelProps<JsDataType>
+> = SharedKnFormFieldData<Field> & VModelProps<JsDataType>
 
 export declare type PreparedQuasarFieldProps<T extends { label?: string }> =
   Omit<T, 'label'>
@@ -126,7 +134,7 @@ export interface KnFormFieldGroup {
    * The label of the group (required)
    */
   label?: string
-
+  groupKey?: string
   iconProps?: QIconProps
 
   expandable?: boolean
@@ -139,7 +147,25 @@ export interface KnFormFieldGroup {
   /**
    * The fields of the group (required)
    */
+  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
   fields: KnFormAnyField[]
 }
 
-export type KnFormModelData = Record<string, any>
+export declare type KnFormFieldGroupPossibleDefaults = Partial<Omit<KnFormFieldGroup, 'fields' | 'groupKey'>>
+
+export interface KnFormFieldGroupProps extends KnFormFieldGroup {
+  headerPadding?: ScreenBreakpoint
+}
+
+export interface KnFormLayoutData {
+  /**
+   * The groups of the form (required)
+   */
+  groups: KnFormFieldGroup[]
+
+  /**
+   * Pass as default to all groups
+   */
+  groupDefaults?: Partial<Omit<KnFormFieldGroupProps, 'fields'>>
+
+}

@@ -3,9 +3,11 @@
 import { useVModel, type VModelEmitter } from '../utils/useVModel.ts'
 import type { KnFormAnyFieldProps } from '../types.ts'
 import type { QToggleProps } from 'quasar'
+import { QToggle } from 'quasar'
 import { ref } from 'vue'
 import KnFormUnknownInputField from '../components/fields/KnFormUnknownInputField.vue'
 import { TYPE_COMPONENT_MAP } from '../utils/fieldTypeMap.ts'
+import { getGridClass } from '../utils/formUtils.ts'
 
 defineOptions({
   name: 'KnFormInputFieldWrapper'
@@ -28,9 +30,11 @@ const useToggle = !!toggleProps
 const toggled = ref(false)
 
 const componentToBeMount: any = TYPE_COMPONENT_MAP[props.dataType] ?? KnFormUnknownInputField
+
+const columnClass = getGridClass(props.gridSize)
 </script>
 <template>
-  <div class="kn-form-input-field-wrapper">
+  <div class="kn-form-input-field-wrapper" :class="columnClass">
     <div v-if="useToggle">
       <q-toggle v-model="toggled" v-bind="toggleProps" />
       <component v-if="toggled" v-bind="props" :is="componentToBeMount" v-model="model" />

@@ -1,9 +1,44 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-import { ref } from 'vue';
-import { KnFormInputFieldWrapper, KnFormStringInputField } from '../dist/index';
+import { ref } from 'vue'
+import { KnFormLayout, dh } from '../dist/index'
 
-const testText = ref('test');
+const testData = ref({
+  label: 'loooool'
+})
+
+const formLayout = dh.defineKnForm({
+  groupDefaults: {
+    gutterSize: 'md',
+    fieldDefaults: {
+      gridSize: {
+        xs: 12,
+        sm: 12,
+        md: 6,
+        lg: 4,
+        xl: 3
+      },
+      inputProps: {
+        outlined: true
+      }
+    }
+  },
+  groups: [
+    {
+      label: 'kek',
+      fields: [
+        dh.defineKnFormStringField({
+          dataKey: 'name',
+          label: 'Name'
+        }),
+        dh.defineKnLabelField({
+          dataKey: 'label',
+          label: 'Label'
+        })
+      ]
+    }
+  ]
+})
 </script>
 
 <template>
@@ -16,9 +51,8 @@ const testText = ref('test');
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <div v-text="testText"></div>
-  <kn-form-input-field-wrapper  />
-  <kn-form-string-input-field  />
+  <div v-text="testData"></div>
+  <kn-form-layout v-bind="formLayout" v-model="testData" />
 </template>
 
 <style scoped>
@@ -28,9 +62,11 @@ const testText = ref('test');
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }

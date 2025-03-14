@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import type { KnFormStringInputFieldProps } from '../../types';
-import { useVModel, type VModelEmitter } from '../../utils/useVModel';
-import { QInput } from "quasar";
+import type { KnFormStringInputFieldProps } from '../../types'
+import { type VModelEmitter } from '../../utils/useVModel'
+import { QInput } from 'quasar'
+import { useKnFormField } from '../../helpers/useHelpers.ts'
 
 defineOptions({
-  name: 'KnFormStringInputField',
+  name: 'KnFormStringInputField'
 })
 
 const props = defineProps<KnFormStringInputFieldProps>()
 const emit = defineEmits<VModelEmitter<string>>()
 
-const { model } = useVModel(props, emit, props.defaultValue)
+const { model } = useKnFormField(props, emit)
 </script>
 <template>
   <div>

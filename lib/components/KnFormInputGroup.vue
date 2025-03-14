@@ -1,20 +1,40 @@
 <script setup lang="ts">
-import type { GutterSizeObject, KnFormFieldGroup, KnFormModelData, ScreenBreakpoint } from '../types.ts'
+import type {
+  GutterSizeObject,
+  KnFormFieldGroupProps,
+  KnFormModelData
+} from '../types.ts'
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
-import type { VueClassProp } from 'quasar'
+import type { VueClassObjectProp } from 'quasar'
+import { computed } from 'vue'
+import {QIcon} from 'quasar'
+import { getFieldProps } from '../utils/formUtils.ts'
+import KnFormInputFieldWrapper from './KnFormInputFieldWrapper.vue'
 
 defineOptions({
   name: 'KnFormInputGroup'
 })
 
-const props = defineProps<KnFormFieldGroup & VModelProps<KnFormModelData>>()
+const props = withDefaults(defineProps<KnFormFieldGroupProps & VModelProps<KnFormModelData>>(), {
+  headerPadding: 'xs'
+})
 const emit = defineEmits<VModelEmitter<KnFormModelData>>()
 
 const { model } = useVModel(props, emit)
 
-const getGutterClasses: () => VueClassProp = () => {
+const fields = computed(
+  () => props.fields.filter(
+    // filter visible fields
+    f => f.showIf?.(model.value) ?? true
+  ).map(
+    // apply defaults
+    f => getFieldProps(f, props.fieldDefaults)
+  )
+)
+
+const getGutterClasses: () => VueClassObjectProp = () => {
   if (!props.gutterSize) return {}
-  if (props.gutterSize instanceof String) return {
+  if (typeof props.gutterSize === 'string') return {
     [`q-col-gutter-${props.gutterSize}`]: true
   }
   return {
@@ -23,11 +43,25 @@ const getGutterClasses: () => VueClassProp = () => {
   }
 }
 
-const gutterClasses = getGutterClasses()
-
+const fieldRowClasses: VueClassObjectProp = {
+  ...(props.headerPadding ? {
+    [`q-col-padding-${props.headerPadding}`]: true
+  } : {}),
+  ...getGutterClasses()
+}
 </script>
 <template>
   <div class="kn-form-input-group">
-    <div class="row" :class="gutterClasses"></div>
+    <div class="row items-center full-width q-gutter-x-sm kn-form-input-group__header">
+      <q-icon v-if="props.iconProps" v-bind="props.iconProps" />
+      <div v-if="label" class="kn-form-input-group__label" v-html="label"></div>
+    </div>
+    <div class="row fit" :class="fieldRowClasses">
+      <kn-form-input-field-wrapper
+        v-for="f in fields" :key="f.dataKey"
+        v-model="model[f.dataKey]"
+        v-bind="f"
+      />
+    </div>
   </div>
 </template>

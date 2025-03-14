@@ -1,4 +1,10 @@
-import type { KnFormDataType, KnFormIntInputField, KnFormLabelInputField, KnFormStringInputField } from '../types.ts'
+import type {
+  KnFormDataType,
+  KnFormIntInputField,
+  KnFormLabelInputField,
+  KnFormLayoutData,
+  KnFormStringInputField
+} from '../types.ts'
 
 type DTAppend = { dataType: KnFormDataType }
 
@@ -20,8 +26,14 @@ function defineKnFormIntField(
   return Object.assign(options, { dataType: 'int' } as DTAppend) as KnFormStringInputField
 }
 
-export const dh = {
+function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
+  return options
+}
+
+export default {
   defineKnLabelField,
   defineKnFormStringField,
-  defineKnFormIntField
+  defineKnFormIntField,
+
+  defineKnForm
 }
