@@ -59,5 +59,6 @@
   "bugs": {
     "url": "https://github.com/knpreacher/kn-form-lib/issues"
   },
-  "homepage": "https://github.com/knpreacher/kn-form-lib#readme"
+  "homepage": "https://github.com/knpreacher/kn-form-lib#readme",
+  "packageManager": "yarn@1.22.22"
 }

@@ -4,7 +4,7 @@ import { useVModel, type VModelEmitter } from '../utils/useVModel.ts'
 import type { KnFormAnyFieldProps } from '../types.ts'
 import type { QToggleProps } from 'quasar'
 import { QToggle } from 'quasar'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import KnFormUnknownInputField from '../components/fields/KnFormUnknownInputField.vue'
 import { TYPE_COMPONENT_MAP } from '../utils/fieldTypeMap.ts'
 import { getGridClass } from '../utils/formUtils.ts'
@@ -28,6 +28,16 @@ const toggleProps: Omit<QToggleProps, 'modelValue'> | undefined =
 const useToggle = !!toggleProps
 
 const toggled = ref(false)
+const toggledValue = ref(model.value)
+
+watch(toggled, (value) => {
+  if (value) {
+    model.value = toggledValue.value
+  } else {
+    toggledValue.value = model.value
+    model.value = props.untoggledValue
+  }
+})
 
 const componentToBeMount: any = TYPE_COMPONENT_MAP[props.dataType] ?? KnFormUnknownInputField
 

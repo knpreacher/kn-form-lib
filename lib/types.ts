@@ -118,6 +118,17 @@ export declare type KnFormIntInputFieldProps = KnFormInputProps<
 >
 
 /**
+ * Float input field
+ */
+export declare type KnFormFloatInputField = KnFormAbstractField<
+  PreparedQuasarFieldProps<QInputProps>
+>
+export declare type KnFormFloatInputFieldProps = KnFormInputProps<
+  KnFormFloatInputField,
+  number
+>
+
+/**
  * All
  */
 export declare type KnFormAnyField =

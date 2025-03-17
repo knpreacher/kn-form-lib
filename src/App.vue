@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
-import { KnFormLayout, dh } from '../dist/index'
+// import { KnFormLayout, dh } from '../dist'
+import { KnFormLayout, dh } from '../lib'
 
 const testData = ref({
   label: 'loooool'
@@ -19,7 +20,7 @@ const formLayout = dh.defineKnForm({
         xl: 3
       },
       inputProps: {
-        outlined: true
+        standout: "bg-primary text-white"
       }
     }
   },
@@ -28,8 +29,17 @@ const formLayout = dh.defineKnForm({
       label: 'kek',
       fields: [
         dh.defineKnFormStringField({
+          wrapToggle: true,
           dataKey: 'name',
           label: 'Name'
+        }),
+        dh.defineKnFormIntField({
+          dataKey: 'age',
+          label: 'Age'
+        }),
+        dh.defineKnFormFloatField({
+          dataKey: 'weight',
+          label: 'Weight'
         }),
         dh.defineKnLabelField({
           dataKey: 'label',
