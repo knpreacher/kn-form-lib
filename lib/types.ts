@@ -1,10 +1,10 @@
 import type {
-  QIconProps,
-  QInputProps,
-  QToggleProps,
-  VueClassProp
+    QIconProps,
+    QInputProps, QSelectProps,
+    QToggleProps,
+    VueClassProp
 } from 'quasar'
-import type { VModelProps } from './utils/useVModel'
+import type {VModelProps} from './utils/useVModel'
 
 /**
  * Screen and sizing
@@ -14,21 +14,21 @@ export declare type ScreenBreakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export declare type ScreenBreakpointSize = number
 
 export declare type FlexItemsAlign =
-  | 'center'
-  | 'start'
-  | 'end'
-  | 'stretch'
-  | 'baseline'
+    | 'center'
+    | 'start'
+    | 'end'
+    | 'stretch'
+    | 'baseline'
 
 export declare type GridSizeProps = Partial<{
-  [key in ScreenBreakpoint]: ScreenBreakpointSize | undefined
+    [key in ScreenBreakpoint]: ScreenBreakpointSize | undefined
 }> & {
-  fit?: boolean
+    fit?: boolean
 }
 
 export interface GutterSizeObject {
-  x?: ScreenBreakpointSize
-  y?: ScreenBreakpointSize
+    x?: ScreenBreakpointSize
+    y?: ScreenBreakpointSize
 }
 
 export declare type GutterSizeProps = GutterSizeObject | ScreenBreakpoint
@@ -36,8 +36,8 @@ export declare type GutterSizeProps = GutterSizeObject | ScreenBreakpoint
  * Dom extra
  */
 export declare type DomExtraProps = Partial<{
-  bindAttrs: Record<string, unknown>
-  itemClass: VueClassProp
+    bindAttrs: Record<string, unknown>
+    itemClass: VueClassProp
 }>
 
 /**
@@ -45,138 +45,170 @@ export declare type DomExtraProps = Partial<{
  */
 
 export declare type KnFormDataType =
-  | 'label'
-  | 'str'
-  | 'int'
-  | 'float'
-  | 'bool'
-  | 'bool_switch'
+    | 'label'
+    | 'str'
+    | 'int'
+    | 'float'
+    | 'bool'
+    | 'bool_switch'
+    | 'select'
 
 export type KnFormModelData = Record<string, any>
 
 export declare type FieldShowConditionFunction<T extends KnFormModelData = KnFormModelData> = (allData: T) => boolean
 
-export interface KnFormAbstractField<InputPropsType = Record<string, any>> {
-  /**
-   * The key of the field (required)
-   */
-  dataKey: string
-  /**
-   * Type of the field
-   */
-  dataType: KnFormDataType
+export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', InputPropsType = Record<string, any>> {
+    /**
+     * The key of the field (required)
+     */
+    dataKey: string
+    /**
+     * Type of the field
+     */
+    dataType: DataType
 
-  /**
-   * The label of the field (required) (will be passed to the input component as label prop)
-   */
-  label?: string
-  gridSize?: GridSizeProps
-  wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
-  untoggledValue?: any
+    /**
+     * The label of the field (required) (will be passed to the input component as label prop)
+     */
+    label?: string
+    gridSize?: GridSizeProps
+    wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
+    untoggledValue?: any
 
-  showIf?: FieldShowConditionFunction<Record<string, any>>
+    showIf?: FieldShowConditionFunction<Record<string, any>>
 
-  inputProps?: InputPropsType
+    inputProps?: InputPropsType
 }
 
 export declare type SharedKnFormFieldData<Field = KnFormAbstractField> = Omit<Field, 'dataKey'>
 
 export declare type KnFormInputProps<
-  Field = KnFormAbstractField,
-  JsDataType = unknown
+    Field = KnFormAbstractField,
+    JsDataType = unknown
 > = SharedKnFormFieldData<Field> & VModelProps<JsDataType>
 
-export declare type PreparedQuasarFieldProps<T extends { label?: string }> =
-  Omit<T, 'label'>
+export declare type PreparedQuasarFieldProps<T extends { label?: string, modelValue?: any }> =
+    Omit<T, 'label'|'modelValue'>
 /**
  * Label input field
  */
-export declare type KnFormLabelInputField = KnFormAbstractField<{}>
+export declare type KnFormLabelInputField = KnFormAbstractField<'label', {}>
 export declare type KnFormLabelInputFieldProps = KnFormInputProps<
-  KnFormLabelInputField,
-  string
+    KnFormLabelInputField,
+    string
 >
 /**
  * String input field
  */
 export declare type KnFormStringInputField = KnFormAbstractField<
-  PreparedQuasarFieldProps<QInputProps>
+    'str',
+    PreparedQuasarFieldProps<QInputProps>
 >
 export declare type KnFormStringInputFieldProps = KnFormInputProps<
-  KnFormStringInputField,
-  string
+    KnFormStringInputField,
+    string
 >
 /**
  * Int input field
  */
 export declare type KnFormIntInputField = KnFormAbstractField<
-  PreparedQuasarFieldProps<QInputProps>
+    'int',
+    PreparedQuasarFieldProps<QInputProps>
 >
 export declare type KnFormIntInputFieldProps = KnFormInputProps<
-  KnFormIntInputField,
-  number
+    KnFormIntInputField,
+    number
 >
-
 /**
  * Float input field
  */
 export declare type KnFormFloatInputField = KnFormAbstractField<
-  PreparedQuasarFieldProps<QInputProps>
+    'float',
+    PreparedQuasarFieldProps<QInputProps>
 >
 export declare type KnFormFloatInputFieldProps = KnFormInputProps<
-  KnFormFloatInputField,
-  number
+    KnFormFloatInputField,
+    number
 >
-
+/**
+ * Float input field
+ */
+export declare type KnSelectDefaultOptionType = {
+    value: string
+    label?: string
+    disable?: boolean,
+    leftIcon?: QIconProps,
+    rightIcon?: QIconProps,
+}
+export declare type KnFormSelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
+    KnFormAbstractField<
+        'select',
+        PreparedQuasarFieldProps<Omit<QSelectProps, 'options' | 'mapOptions'>>
+    >
+    & {
+    options: OptionType[],
+    returnObject?: boolean,
+}
+export declare type KnFormSelectInputFieldProps<
+    OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+    ValueType = any
+> = KnFormInputProps<
+    KnFormSelectInputField<OptionType>,
+    ValueType
+>
 /**
  * All
  */
 export declare type KnFormAnyField =
-  | KnFormLabelInputField
-  | KnFormStringInputField
-  | KnFormIntInputField
+    | KnFormLabelInputField
+    | KnFormStringInputField
+    | KnFormIntInputField
+    | KnFormFloatInputField
+    | Partial<KnFormSelectInputField>
 export declare type KnFormAnyFieldProps =
-  | KnFormLabelInputFieldProps
-  | KnFormStringInputFieldProps
-  | KnFormIntInputFieldProps
+    | KnFormLabelInputFieldProps
+    | KnFormStringInputFieldProps
+    | KnFormIntInputFieldProps
+    | KnFormFloatInputFieldProps
+    | Partial<KnFormSelectInputFieldProps>
 
 export interface KnFormFieldGroup {
-  /**
-   * The label of the group (required)
-   */
-  label?: string
-  groupKey?: string
-  iconProps?: QIconProps
+    /**
+     * The label of the group (required)
+     */
+    label?: string
+    groupKey?: string
+    iconProps?: QIconProps
 
-  expandable?: boolean
-  /**
-   * Pass as default to all fields
-   */
-  gridSize?: GridSizeProps
-  gutterSize?: GutterSizeProps
+    expandable?: boolean
+    /**
+     * Pass as default to all fields
+     */
+    gridSize?: GridSizeProps
+    gutterSize?: GutterSizeProps
 
-  /**
-   * The fields of the group (required)
-   */
-  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
-  fields: KnFormAnyField[]
+    /**
+     * The fields of the group (required)
+     */
+    fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
+    fields: KnFormAnyField[]
 }
 
 export declare type KnFormFieldGroupPossibleDefaults = Partial<Omit<KnFormFieldGroup, 'fields' | 'groupKey'>>
 
 export interface KnFormFieldGroupProps extends KnFormFieldGroup {
-  headerPadding?: ScreenBreakpoint
+    headerPadding?: ScreenBreakpoint
 }
 
 export interface KnFormLayoutData {
-  /**
-   * The groups of the form (required)
-   */
-  groups: KnFormFieldGroup[]
+    /**
+     * The groups of the form (required)
+     */
+    groups: KnFormFieldGroup[]
 
-  /**
-   * Pass as default to all groups
-   */
-  groupDefaults?: Partial<Omit<KnFormFieldGroupProps, 'fields'>>
+    /**
+     * Pass as default to all groups
+     */
+    groupDefaults?: Partial<Omit<KnFormFieldGroupProps, 'fields'>>
 
 }
