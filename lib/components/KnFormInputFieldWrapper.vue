@@ -1,6 +1,6 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="ValueType = any, FieldProps extends KnFormAnyFieldProps">
 
-import { useVModel, type VModelEmitter } from '../utils/useVModel.ts'
+import { useVModel, type VModelEmitter, VModelProps } from '../utils/useVModel.ts'
 import type { KnFormAnyFieldProps } from '../types.ts'
 import type { QToggleProps } from 'quasar'
 import { QToggle } from 'quasar'
@@ -13,17 +13,19 @@ defineOptions({
   name: 'KnFormInputFieldWrapper'
 })
 
-const props = defineProps<KnFormAnyFieldProps>()
-const emit = defineEmits<VModelEmitter<any>>()
+const {fieldProps} = defineProps<{
+  fieldProps: Omit<FieldProps, 'modelValue'>,
+} & VModelProps<ValueType>>()
+const emit = defineEmits<VModelEmitter<ValueType>>()
 
-const { model } = useVModel(props, emit, props.defaultValue)
+const {model} = useVModel(fieldProps, emit, fieldProps.defaultValue)
 
 const toggleProps: Omit<QToggleProps, 'modelValue'> | undefined =
-  props.wrapToggle === true
+  fieldProps.wrapToggle === true
     ? {
-      label: props.label
+      label: fieldProps.label
     }
-    : props.wrapToggle
+    : fieldProps.wrapToggle
 
 const useToggle = !!toggleProps
 
@@ -35,20 +37,20 @@ watch(toggled, (value) => {
     model.value = toggledValue.value
   } else {
     toggledValue.value = model.value
-    model.value = props.untoggledValue
+    model.value = fieldProps.untoggledValue
   }
 })
 
-const componentToBeMount: any = TYPE_COMPONENT_MAP[props.dataType] ?? KnFormUnknownInputField
+const componentToBeMount: any = TYPE_COMPONENT_MAP[fieldProps.dataType] ?? KnFormUnknownInputField
 
-const columnClass = getGridClass(props.gridSize)
+const columnClass = getGridClass(fieldProps.gridSize)
 </script>
 <template>
   <div class="kn-form-input-field-wrapper" :class="columnClass">
     <div v-if="useToggle">
-      <q-toggle v-model="toggled" v-bind="toggleProps" />
-      <component v-if="toggled" v-bind="props" :is="componentToBeMount" v-model="model" />
+      <q-toggle v-model="toggled" v-bind="toggleProps"/>
+      <component v-if="toggled" v-bind="fieldProps" :is="componentToBeMount" v-model="model"/>
     </div>
-    <component v-else v-bind="props" :is="componentToBeMount" v-model="model" />
+    <component v-else v-bind="fieldProps" :is="componentToBeMount" v-model="model"/>
   </div>
 </template>

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
 import { ref } from 'vue'
 // import { KnFormLayout, dh } from '../dist'
-import { KnFormLayout, dh, service, types } from '../lib'
+import { KnFormLayout, dh, service, types, LazyListView } from '../lib'
 
 const testData = ref({
   label: 'loooool'
@@ -21,30 +20,42 @@ interface ApiResponse {
 }
 
 class MyResourceService<ResponseType extends ApiResponse = ApiResponse> extends service.LimitOffsetLazyResourceService<
-  types.KnSelectDefaultOptionType,
+  ApiResponseItem,
   ResponseType
 > {
 
-  parseResponseItem(item: ApiResponseItem): types.KnSelectDefaultOptionType {
-    return {
-      value: String(item.id),
-      label: item.title
-    }
+
+  getItemsFromResponse(response: ResponseType): ApiResponseItem[] {
+    return response.products
   }
 
 
-  getItemsFromResponse(response: ResponseType): types.KnSelectDefaultOptionType[] {
-    return response.products.map(this.parseResponseItem)
-  }
-
-
-  processResponse(response: ResponseType): ResponseType {
+  processResponse(response: ResponseType) {
+    super.processResponse(response)
     this.limit = response.limit
     this.offset += response.limit
     this.total = response.total
-    return response
   }
 }
+
+const testResourceService = new MyResourceService<ApiResponse>({
+  requestFn: async (ctx, stringFilter) => {
+    console.log('Call requestFn', ctx.offset, ctx.total)
+    const resp = await fetch(
+      `https://dummyjson.com/products?limit=${ctx.limit}&skip=${ctx.offset}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    console.log(ctx.offset, resp.url)
+    return resp.json()
+  },
+  limit: 50,
+  itemToOption: item => ({label: item.title, value: String(item.id)})
+})
 
 const formLayout = dh.defineKnForm({
   groupDefaults: {
@@ -107,25 +118,11 @@ const formLayout = dh.defineKnForm({
             }
           ]
         }),
-        dh.defineKnFormLazySelectField({
-          label: 'Lazy selection',
-          dataKey: 'lazy',
-          resourceService: new MyResourceService(
-            async (ctx, stringFilter) => {
-              const resp = await fetch(
-                `https://dummyjson.com/products?limit=${ctx.limit}&skip=${ctx.offset}`,
-                {
-                  method: 'GET',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  }
-                }
-              )
-              console.log(ctx, resp.body)
-              return resp.json()
-            }, 10
-          )
-        }),
+        // dh.defineKnFormLazySelectField({
+        //   label: 'Lazy selection',
+        //   dataKey: 'lazy',
+        //   resourceService: testResourceService,
+        // }),
       ]
     }
   ]
@@ -141,8 +138,10 @@ const formLayout = dh.defineKnForm({
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
     </a>
   </div>
-  <HelloWorld msg="Vite + Vue"/>
   <div v-text="testData"></div>
+  <div>
+    <lazy-list-view :resource-service="testResourceService"/>
+  </div>
   <kn-form-layout v-bind="formLayout" v-model="testData"/>
 </template>
 

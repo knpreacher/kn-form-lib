@@ -162,13 +162,16 @@ export declare type KnFormSelectInputFieldProps<
 /**
  * Lazy select input field
  */
-export declare type KnFormLazySelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
+export declare type KnFormLazySelectInputField<
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  ServiceType extends AbstractLazyResourceService = AbstractLazyResourceService
+> =
   KnFormAbstractField<
     'select',
     PreparedQuasarFieldProps<Omit<QField, 'loading'>>
   >
   & {
-  resourceService: AbstractLazyResourceService,
+  resourceService: ServiceType,
   returnObject?: boolean,
 }
 export declare type KnFormLazySelectInputFieldProps<
@@ -186,15 +189,15 @@ export declare type KnFormAnyField =
   | KnFormStringInputField
   | KnFormIntInputField
   | KnFormFloatInputField
-  | Partial<KnFormSelectInputField>
-  | Partial<KnFormLazySelectInputField>
+  | KnFormSelectInputField
+  | KnFormLazySelectInputField
 export declare type KnFormAnyFieldProps =
   | KnFormLabelInputFieldProps
   | KnFormStringInputFieldProps
   | KnFormIntInputFieldProps
   | KnFormFloatInputFieldProps
-  | Partial<KnFormSelectInputFieldProps>
-  | Partial<KnFormLazySelectInputFieldProps>
+  | KnFormSelectInputFieldProps
+  | KnFormLazySelectInputFieldProps
 
 export interface KnFormFieldGroup {
   /**

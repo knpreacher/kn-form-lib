@@ -7,7 +7,7 @@ import type {
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
 import type { VueClassObjectProp } from 'quasar'
 import { computed } from 'vue'
-import {QIcon} from 'quasar'
+import { QIcon } from 'quasar'
 import { getFieldProps } from '../utils/formUtils.ts'
 import KnFormInputFieldWrapper from './KnFormInputFieldWrapper.vue'
 
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<KnFormFieldGroupProps & VModelProps<KnFor
 })
 const emit = defineEmits<VModelEmitter<KnFormModelData>>()
 
-const { model } = useVModel(props, emit)
+const {model} = useVModel(props, emit)
 
 const fields = computed(
   () => props.fields.filter(
@@ -28,7 +28,7 @@ const fields = computed(
     f => f.showIf?.(model.value) ?? true
   ).map(
     // apply defaults
-    f => getFieldProps(f, props.fieldDefaults)
+    f => getFieldProps(f as any, props.fieldDefaults)
   )
 )
 
@@ -53,14 +53,14 @@ const fieldRowClasses: VueClassObjectProp = {
 <template>
   <div class="kn-form-input-group">
     <div class="row items-center full-width q-gutter-x-sm kn-form-input-group__header">
-      <q-icon v-if="props.iconProps" v-bind="props.iconProps" />
+      <q-icon v-if="props.iconProps" v-bind="props.iconProps"/>
       <div v-if="label" class="kn-form-input-group__label" v-html="label"></div>
     </div>
     <div class="row fit" :class="fieldRowClasses">
       <kn-form-input-field-wrapper
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
-        v-bind="f"
+        :field-props="f"
       />
     </div>
   </div>

@@ -1,6 +1,6 @@
-import type { KnSelectDefaultOptionType } from '../types.ts';
 import type { Ref } from 'vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import type { KnSelectDefaultOptionType } from '../types.ts';
 
 class NotImplementedError extends Error {
   constructor() {
@@ -10,20 +10,43 @@ class NotImplementedError extends Error {
 
 export declare type RequestFn<
   ServiceType extends AbstractLazyResourceService,
+  ResponseType = any
+> = (ctx: ServiceType, stringFilter?: string) => Promise<ResponseType>
+
+interface ResourceServiceConstructorOptions<
+  DataType extends {} = {},
   ResponseType = any,
-  RequestOptionsType extends Record<string, any> = Record<string, any>
-> = (ctx: ServiceType, stringFilter?: string, options?: RequestOptionsType) => Promise<ResponseType>
+  ContextType extends AbstractLazyResourceService = AbstractLazyResourceService,
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
+> {
+  loadingRef?: Ref<boolean>;
+  requestFn: RequestFn<ContextType, ResponseType>;
+  itemToOption: (item: DataType) => OptionType
+}
 
 export class AbstractLazyResourceService<
-  DataItem extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  DataItem extends {} = {},
   ResponseType = any,
-  RequestOptionsType extends Record<string, any> = Record<string, any>
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
 > {
-  private readonly requestFn: RequestFn<AbstractLazyResourceService, ResponseType, RequestOptionsType>;
+  private readonly requestFn: RequestFn<AbstractLazyResourceService, ResponseType>;
   items: Ref<DataItem[]> = ref([])
+  private readonly loadingRef?: Ref<boolean>;
+  private readonly itemToOption: (item: DataItem) => OptionType;
 
-  constructor(requestFn: RequestFn<AbstractLazyResourceService, ResponseType, RequestOptionsType>) {
-    this.requestFn = requestFn;
+  constructor(options: ResourceServiceConstructorOptions<
+    DataItem,
+    ResponseType,
+    AbstractLazyResourceService,
+    OptionType
+  >) {
+    this.requestFn = options.requestFn;
+    this.loadingRef = options.loadingRef;
+    this.itemToOption = options.itemToOption
+  }
+
+  get options() {
+    return computed(() => this.items.value.map(this.itemToOption))
   }
 
   // @ts-ignore
@@ -34,18 +57,24 @@ export class AbstractLazyResourceService<
   preRequest(): void {
   }
 
-  async makeRequest(stringFilter?: string, options?: RequestOptionsType): Promise<ResponseType> {
+  async makeRequest(stringFilter?: string): Promise<ResponseType> {
     this.preRequest()
-    return await this.requestFn(this as any, stringFilter, options);
+    return await this.requestFn(this as any, stringFilter)
   }
 
-  processResponse(response: ResponseType): ResponseType {
-    return response
+  // @ts-ignore
+  processResponse(response: ResponseType): void {
   }
 
   async getNextItems(stringFilter?: string): Promise<DataItem[]> {
+    if (this.loadingRef) {
+      this.loadingRef.value = true
+    }
     const response = await this.makeRequest(stringFilter);
     this.processResponse(response)
+    if (this.loadingRef) {
+      this.loadingRef.value = false
+    }
     return this.getItemsFromResponse(response);
   }
 
@@ -61,10 +90,11 @@ export class AbstractLazyResourceService<
       this.clearData()
     }
     if (this.isFullyLoaded()) {
-      return this.items.value;
+      return []
     }
-    this.items.value.push(...(await this.getNextItems(stringFilter)))
-    return this.items.value
+    const newItems = await this.getNextItems(stringFilter)
+    this.items.value.push(...newItems)
+    return newItems
   }
 
   isFullyLoaded(): boolean {
@@ -73,7 +103,7 @@ export class AbstractLazyResourceService<
 }
 
 export class BaseLazyResourceService<
-  DataItem extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  DataItem extends {} = {},
 > extends AbstractLazyResourceService<DataItem, DataItem[]> {
 
   _loaded: boolean = false
@@ -98,8 +128,9 @@ export class BaseLazyResourceService<
 }
 
 export class LimitOffsetLazyResourceService<
-  DataItem extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  DataItem extends {} = {},
   ResponseType = any,
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
 > extends AbstractLazyResourceService<DataItem, ResponseType> {
 
   limit: number
@@ -108,13 +139,24 @@ export class LimitOffsetLazyResourceService<
   _loaded: boolean = false
 
   constructor(
-    requestFn: RequestFn<LimitOffsetLazyResourceService, ResponseType>,
-    limit: number,
+    options: ResourceServiceConstructorOptions<
+      DataItem,
+      ResponseType,
+      LimitOffsetLazyResourceService,
+      OptionType
+    > & {
+      limit: number
+    }
   ) {
-    super(requestFn as any);
-    this.limit = limit
+    super(options as any);
+    this.limit = options.limit
   }
 
+
+  processResponse(response: ResponseType) {
+    super.processResponse(response);
+    this._loaded = true
+  }
 
   isFullyLoaded(): boolean {
     return this._loaded && this.items.value.length >= this.total;
