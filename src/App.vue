@@ -1,12 +1,50 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-import {ref} from 'vue'
+import { ref } from 'vue'
 // import { KnFormLayout, dh } from '../dist'
-import {KnFormLayout, dh} from '../lib'
+import { KnFormLayout, dh, service, types } from '../lib'
 
 const testData = ref({
   label: 'loooool'
 })
+
+interface ApiResponseItem {
+  id: number,
+  title: string,
+}
+
+interface ApiResponse {
+  products: ApiResponseItem[],
+  total: number,
+  skip: number,
+  limit: number
+}
+
+class MyResourceService<ResponseType extends ApiResponse = ApiResponse> extends service.LimitOffsetLazyResourceService<
+  types.KnSelectDefaultOptionType,
+  ResponseType
+> {
+
+  parseResponseItem(item: ApiResponseItem): types.KnSelectDefaultOptionType {
+    return {
+      value: String(item.id),
+      label: item.title
+    }
+  }
+
+
+  getItemsFromResponse(response: ResponseType): types.KnSelectDefaultOptionType[] {
+    return response.products.map(this.parseResponseItem)
+  }
+
+
+  processResponse(response: ResponseType): ResponseType {
+    this.limit = response.limit
+    this.offset += response.limit
+    this.total = response.total
+    return response
+  }
+}
 
 const formLayout = dh.defineKnForm({
   groupDefaults: {
@@ -68,7 +106,26 @@ const formLayout = dh.defineKnForm({
               }
             }
           ]
-        })
+        }),
+        dh.defineKnFormLazySelectField({
+          label: 'Lazy selection',
+          dataKey: 'lazy',
+          resourceService: new MyResourceService(
+            async (ctx, stringFilter) => {
+              const resp = await fetch(
+                `https://dummyjson.com/products?limit=${ctx.limit}&skip=${ctx.offset}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                }
+              )
+              console.log(ctx, resp.body)
+              return resp.json()
+            }, 10
+          )
+        }),
       ]
     }
   ]

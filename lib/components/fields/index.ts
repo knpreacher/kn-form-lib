@@ -3,6 +3,7 @@ import KnFormStringInputField from './KnFormStringInputField.vue'
 import KnFormIntInputField from './KnFormIntInputField.vue'
 import KnFormFloatInputField from './KnFormFloatInputField.vue'
 import KnFormSelectInputField from './KnFormSelectInputField.vue'
+import KnFormLazySelectInputField from './KnFormLazySelectInputField.vue'
 import KnFormUnknownInputField from './KnFormUnknownInputField.vue'
 
 export {
@@ -11,5 +12,6 @@ export {
     KnFormIntInputField,
     KnFormFloatInputField,
     KnFormSelectInputField,
+    KnFormLazySelectInputField,
     KnFormUnknownInputField
 }
