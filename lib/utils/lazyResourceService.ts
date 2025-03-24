@@ -8,41 +8,49 @@ class NotImplementedError extends Error {
   }
 }
 
+type OptionType = KnSelectDefaultOptionType
+
 export declare type RequestFn<
-  ServiceType extends AbstractLazyResourceService,
-  ResponseType = any
-> = (ctx: ServiceType, stringFilter?: string) => Promise<ResponseType>
+  DataItem extends {} = {},
+  ResponseType = any,
+  C extends AbstractLazyResourceService<DataItem, ResponseType, C> = any
+> = (ctx: C, stringFilter?: string) => Promise<ResponseType>
 
 interface ResourceServiceConstructorOptions<
   DataType extends {} = {},
   ResponseType = any,
-  ContextType extends AbstractLazyResourceService = AbstractLazyResourceService,
-  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
+  C extends AbstractLazyResourceService<DataType, ResponseType, C> = any
 > {
   loadingRef?: Ref<boolean>;
-  requestFn: RequestFn<ContextType, ResponseType>;
-  itemToOption: (item: DataType) => OptionType
+  requestFn: RequestFn<C, ResponseType>;
+  itemToOption?: (item: DataType) => OptionType
 }
 
 export class AbstractLazyResourceService<
   DataItem extends {} = {},
   ResponseType = any,
-  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
+  C extends AbstractLazyResourceService<DataItem, ResponseType, C> = any
 > {
-  private readonly requestFn: RequestFn<AbstractLazyResourceService, ResponseType>;
+  private readonly requestFn: RequestFn<C>;
   items: Ref<DataItem[]> = ref([])
   private readonly loadingRef?: Ref<boolean>;
-  private readonly itemToOption: (item: DataItem) => OptionType;
+  private readonly _itemToOption?: any;
 
   constructor(options: ResourceServiceConstructorOptions<
     DataItem,
     ResponseType,
-    AbstractLazyResourceService,
-    OptionType
+    C
   >) {
     this.requestFn = options.requestFn;
     this.loadingRef = options.loadingRef;
-    this.itemToOption = options.itemToOption
+    this._itemToOption = options.itemToOption
+  }
+
+  itemToOption(item: DataItem): OptionType {
+    if (this._itemToOption) {
+      return this._itemToOption(item)
+    }
+    throw new NotImplementedError()
   }
 
   get options() {
@@ -130,8 +138,8 @@ export class BaseLazyResourceService<
 export class LimitOffsetLazyResourceService<
   DataItem extends {} = {},
   ResponseType = any,
-  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType
-> extends AbstractLazyResourceService<DataItem, ResponseType> {
+  C extends LimitOffsetLazyResourceService<DataItem, ResponseType, C> = any
+> extends AbstractLazyResourceService<DataItem, ResponseType, C> {
 
   limit: number
   total: number = -1
@@ -142,13 +150,12 @@ export class LimitOffsetLazyResourceService<
     options: ResourceServiceConstructorOptions<
       DataItem,
       ResponseType,
-      LimitOffsetLazyResourceService,
-      OptionType
+      C
     > & {
       limit: number
     }
   ) {
-    super(options as any);
+    super(options);
     this.limit = options.limit
   }
 

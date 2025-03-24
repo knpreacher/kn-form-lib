@@ -1,12 +1,12 @@
 import type {
   QField,
   QIconProps,
-  QInputProps, QSelectProps,
+  QInputProps, QItemProps, QPopupProxyProps, QSelectProps,
   QToggleProps,
   VueClassProp
 } from 'quasar'
 import type { VModelProps } from './utils/useVModel'
-import type { AbstractLazyResourceService } from './utils/lazyResourceService.ts';
+import type { AbstractLazyResourceService } from './utils/lazyResourceService.ts'
 
 /**
  * Screen and sizing
@@ -163,22 +163,24 @@ export declare type KnFormSelectInputFieldProps<
  * Lazy select input field
  */
 export declare type KnFormLazySelectInputField<
-  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
   ServiceType extends AbstractLazyResourceService = AbstractLazyResourceService
 > =
   KnFormAbstractField<
-    'select',
+    'select_lazy',
     PreparedQuasarFieldProps<Omit<QField, 'loading'>>
   >
   & {
   resourceService: ServiceType,
+  popupProxyProps?: Omit<QPopupProxyProps, 'modelValue' | 'onUpdate:modelValue'>,
   returnObject?: boolean,
+  optionsHeight?: number,
+  optionsMenuWidth?: string,
+  itemProps?: Omit<QItemProps, 'clickable' | 'active'>
 }
 export declare type KnFormLazySelectInputFieldProps<
-  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
   ValueType = any
 > = KnFormInputProps<
-  KnFormLazySelectInputField<OptionType>,
+  KnFormLazySelectInputField,
   ValueType
 >
 /**

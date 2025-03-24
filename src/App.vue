@@ -21,7 +21,8 @@ interface ApiResponse {
 
 class MyResourceService<ResponseType extends ApiResponse = ApiResponse> extends service.LimitOffsetLazyResourceService<
   ApiResponseItem,
-  ResponseType
+  ResponseType,
+  service.LimitOffsetLazyResourceService<ApiResponseItem, ResponseType>
 > {
 
 
@@ -54,7 +55,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
     return resp.json()
   },
   limit: 50,
-  itemToOption: item => ({label: item.title, value: String(item.id)})
+  // itemToOption: item => ({label: item.title, value: String(item.id)})
 })
 
 const formLayout = dh.defineKnForm({
@@ -118,11 +119,11 @@ const formLayout = dh.defineKnForm({
             }
           ]
         }),
-        // dh.defineKnFormLazySelectField({
-        //   label: 'Lazy selection',
-        //   dataKey: 'lazy',
-        //   resourceService: testResourceService,
-        // }),
+        dh.defineKnFormLazySelectField({
+          label: 'Lazy selection',
+          dataKey: 'lazy',
+          resourceService: testResourceService,
+        }),
       ]
     }
   ]
@@ -140,7 +141,7 @@ const formLayout = dh.defineKnForm({
   </div>
   <div v-text="testData"></div>
   <div>
-    <lazy-list-view :resource-service="testResourceService"/>
+<!--    <lazy-list-view :resource-service="testResourceService"/>-->
   </div>
   <kn-form-layout v-bind="formLayout" v-model="testData"/>
 </template>

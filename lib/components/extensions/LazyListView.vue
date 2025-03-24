@@ -15,6 +15,10 @@ import { computed, useTemplateRef } from 'vue';
 import type { AbstractLazyResourceService } from '../../utils/lazyResourceService';
 import type { KnSelectDefaultOptionType } from '../../types.ts';
 
+defineOptions({
+  name: 'LazyListView'
+})
+
 const props = withDefaults(defineProps<{
   height?: number,
   itemProps?: Omit<QItemProps, 'clickable' | 'active'>
@@ -31,7 +35,8 @@ const pxHeight = computed(() => `${props.height}px`)
 
 const scrollArea = useTemplateRef<QScrollArea>('scrollArea')
 const scrollAreaStyle = computed<VueStyleObjectProp>(() => ({
-  height: pxHeight.value
+  height: pxHeight.value,
+  width: '100%',
 }))
 
 type LoadFn = QInfiniteScroll['$props']['onLoad']

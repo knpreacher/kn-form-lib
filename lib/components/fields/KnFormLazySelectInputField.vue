@@ -1,38 +1,54 @@
 <script lang="ts" setup
-        generic="OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType, ValueType = any">
+        generic="ValueType extends {} = {}">
 import type {
-  KnFormLazySelectInputFieldProps,
-  KnSelectDefaultOptionType
+  KnFormLazySelectInputFieldProps
 } from '../../types'
 import { type VModelEmitter } from '../../utils/useVModel'
-import { type QItemProps, QField, QItem, QItemSection, QItemLabel, QIcon } from 'quasar'
+import { QField, QPopupProxy, QCard, type VueStyleObjectProp } from 'quasar'
 import { useKnFormField } from '../../helpers/useHelpers.ts'
-import { computed, nextTick, ref } from 'vue';
-
-interface OptionSlotScope {
-  index: number,
-  opt: OptionType,
-  itemProps: QItemProps,
-}
+import { computed, ref } from 'vue'
+import LazyListView from './../extensions/LazyListView.vue'
 
 defineOptions({
   name: 'KnFormLazySelectInputField'
 })
 
-const props = withDefaults(defineProps<KnFormLazySelectInputFieldProps<OptionType, ValueType>>(), {})
+interface QFieldControlSlotScope {
+  modelValue: ValueType,
+  id: string,
+  field: Element,
+  editable: boolean,
+  focused: boolean,
+  floatingLabel: boolean
+}
+
+const props = withDefaults(defineProps<KnFormLazySelectInputFieldProps<ValueType>>(), {
+  optionsHeight: 200,
+  optionsMenuWidth: '250px'
+})
 const emit = defineEmits<VModelEmitter<ValueType>>()
 
-const {model} = useKnFormField(props, emit)
+const { model } = useKnFormField(props, emit)
 
 const loading = ref(false)
 
-const displayOptionText = (o: OptionType): string => {
-  if (o.label) {
-    return o.label
-  }
-  return String(o.value)
+const popupOpened = ref(false)
+
+const itemToString = (item: ValueType) => {
+  if (!item) return ''
+  return props.resourceService.itemToOption(item).label
 }
 
+function onListViewItemClick(item: ValueType) {
+  console.warn(item)
+  model.value = item
+  popupOpened.value = false
+}
+
+const popupCardStyle = computed<VueStyleObjectProp>(()=>({
+  height: `${props.optionsHeight}px`,
+  width: props.optionsMenuWidth
+}))
 
 </script>
 <template>
@@ -42,21 +58,21 @@ const displayOptionText = (o: OptionType): string => {
              v-bind="inputProps"
              :loading="loading"
     >
-
-      <!--              @filter="onSelectFilter"-->
-      <!--      <template #option="{opt, itemProps}: OptionSlotScope">-->
-      <!--        <q-item v-bind="itemProps">-->
-      <!--          <q-item-section avatar v-if="opt.leftIcon">-->
-      <!--            <q-icon v-bind="opt.leftIcon"/>-->
-      <!--          </q-item-section>-->
-      <!--          <q-item-section>-->
-      <!--            <q-item-label v-text="displayOptionText(opt)"></q-item-label>-->
-      <!--          </q-item-section>-->
-      <!--          <q-item-section side v-if="opt.rightIcon">-->
-      <!--            <q-icon v-bind="opt.rightIcon"/>-->
-      <!--          </q-item-section>-->
-      <!--        </q-item>-->
-      <!--      </template>-->
+      <template #control="{modelValue}: QFieldControlSlotScope">
+        <span v-text="itemToString(modelValue)"></span>
+      </template>
+      <q-popup-proxy
+        v-bind="popupProxyProps"
+        v-model="popupOpened"
+      >
+        <q-card style="min-width: 100%" :style="popupCardStyle">
+          <lazy-list-view
+            :resource-service="resourceService"
+            :height="optionsHeight"
+            @on-item-click="onListViewItemClick"
+          />
+        </q-card>
+      </q-popup-proxy>
     </q-field>
   </div>
 </template>

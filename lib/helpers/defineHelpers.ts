@@ -7,6 +7,7 @@ import type {
   KnFormStringInputField,
   KnFormSelectInputField, KnSelectDefaultOptionType, KnFormLazySelectInputField,
 } from '../types.ts'
+import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 
 type DTAppend = { dataType: KnFormDataType }
 
@@ -38,10 +39,12 @@ function defineKnFormSelectField<OptionType extends KnSelectDefaultOptionType = 
   return Object.assign(options, {dataType: 'select'} as DTAppend) as KnFormSelectInputField<OptionType>
 }
 
-function defineKnFormLazySelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
+function defineKnFormLazySelectField<
+  ServiceType extends AbstractLazyResourceService,
+>(
   options: Omit<KnFormLazySelectInputField, 'dataType'>,
-): KnFormLazySelectInputField<OptionType> {
-  return Object.assign(options, {dataType: 'select_lazy'} as DTAppend) as KnFormLazySelectInputField<OptionType>
+): KnFormLazySelectInputField {
+  return Object.assign(options, {dataType: 'select_lazy'} as DTAppend) as unknown as KnFormLazySelectInputField<ServiceType>
 }
 
 function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
