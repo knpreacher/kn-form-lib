@@ -16,6 +16,27 @@ function isPlainObject(value: any): boolean {
   return proto === Object.prototype || proto === null
 }
 
+/**
+ * Determine if an object is empty:
+ * for strings: length === 0;
+ * for arrays: length === 0;
+ * for objects: Object.keys(obj).length === 0;
+ * for null/undefined: true;
+ * for numbers: Number.isNaN;
+ * for functions: false
+ * @param value
+ * @returns {boolean}
+ */
+function isEmpty(value: any): boolean {
+  if (typeof value === 'string') return value.length === 0
+  if (Array.isArray(value)) return value.length === 0
+  if (isPlainObject(value)) return Object.keys(value).length === 0
+  if (value === null || value === undefined) return true
+  if (typeof value === 'number') return Number.isNaN(value)
+  if (typeof value === 'function') return false
+  return false
+}
+
 function deepClone<T extends DeepCloneable>(source: T, hash = new WeakMap()): T {
   if (source === null || typeof source !== 'object') {
     if (typeof source === 'function') {
@@ -115,4 +136,4 @@ function deepJoinObjects<Type = unknown>(...objs: Type[]): Type {
   return result
 }
 
-export default { deepJoinObjects, copyObject, deepClone, isPlainObject }
+export { deepJoinObjects, copyObject, deepClone, isPlainObject, isEmpty }

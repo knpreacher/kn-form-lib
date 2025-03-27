@@ -5,7 +5,7 @@ import type {
   KnFormFieldGroupPossibleDefaults, ScreenBreakpoint,
   SharedKnFormFieldData
 } from '../types.ts'
-import utils from './jsUtils.ts'
+import {deepJoinObjects} from './jsUtils.ts'
 import type { VueClassObjectProp } from 'quasar'
 
 
@@ -27,7 +27,7 @@ export function getFieldProps<FieldType extends KnFormAbstractField>(
   groupDefaults?: Partial<Omit<SharedKnFormFieldData<FieldType>, 'dataType'>>,
 ): FieldType {
   if (!groupDefaults) return fieldData
-  return utils.deepJoinObjects(
+  return deepJoinObjects(
     groupDefaults,
     fieldData
   ) as FieldType
@@ -38,7 +38,7 @@ export function getGroupProps(
   formDefaults?: KnFormFieldGroupPossibleDefaults,
 ): KnFormFieldGroup {
   if (!formDefaults) return groupData
-  return utils.deepJoinObjects(
+  return deepJoinObjects(
     formDefaults,
     groupData
   ) as KnFormFieldGroup

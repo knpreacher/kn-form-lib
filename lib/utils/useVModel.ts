@@ -1,4 +1,4 @@
-import type {Ref, UnwrapRef} from 'vue';
+import type {Ref} from 'vue';
 import {type DefineProps, ref, watch} from 'vue';
 
 export const MODEL_DEFAULT_EMIT = 'update:modelValue'
@@ -40,17 +40,17 @@ export function useVModel<T = unknown>(
   props: VModelProps<T> | DefineProps<VModelProps<T>, any> | VModelPartialProps<T> | DefineProps<VModelPartialProps<T>, any>,
   emit: VModelEmitterOption<T>,
   _default: T | undefined = undefined
-): { model: Ref<UnwrapRef<T>> | Ref<T>, initial: Ref<UnwrapRef<T>> | Ref<T> } {
+): { model: Ref<T>, initial: Ref<T> } {
   // TODO assign default value correctly
   const initial = getInitialValue(props.modelValue, props?.defaultValue ?? _default)
-  const model = ref<T>(getModelValue(props.modelValue, props?.defaultValue ?? _default))
+  const model = ref<T>(getModelValue(props.modelValue, props?.defaultValue ?? _default)) as unknown as Ref<T>
   watch(model, (value) => {
     emit(MODEL_DEFAULT_EMIT, value as T)
   }, {
     deep: true
   })
   watch(() => props.modelValue, (value) => {
-    model.value = value as UnwrapRef<T>
+    model.value = value as T
   }, {
     deep: true
   })

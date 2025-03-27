@@ -1,7 +1,7 @@
 import type {
   QField,
   QIconProps,
-  QInputProps, QItemProps, QPopupProxyProps, QSelectProps,
+  QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QSelectProps,
   QToggleProps,
   VueClassProp
 } from 'quasar'
@@ -54,7 +54,18 @@ export declare type KnFormDataType =
   | 'bool'
   | 'bool_switch'
   | 'select'
+  | 'radio_select'
   | 'select_lazy'
+
+//
+// Utilities
+//
+export type ValidateFn = (value: any) => boolean | string
+export type AsyncValidateFn = (value: any) => Promise<ReturnType<ValidateFn>>
+
+export type FieldHasCustomValidationProps = {
+  rules?: (AsyncValidateFn | ValidateFn)[],
+}
 
 export type KnFormModelData = Record<string, any>
 
@@ -81,6 +92,14 @@ export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', 
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
   inputProps?: InputPropsType
+}
+
+export declare type KnSelectDefaultOptionType = {
+  value: string
+  label?: string
+  disable?: boolean,
+  leftIcon?: QIconProps,
+  rightIcon?: QIconProps,
 }
 
 export declare type SharedKnFormFieldData<Field = KnFormAbstractField> = Omit<Field, 'dataKey'>
@@ -136,13 +155,6 @@ export declare type KnFormFloatInputFieldProps = KnFormInputProps<
 /**
  * Select input field
  */
-export declare type KnSelectDefaultOptionType = {
-  value: string
-  label?: string
-  disable?: boolean,
-  leftIcon?: QIconProps,
-  rightIcon?: QIconProps,
-}
 export declare type KnFormSelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
   KnFormAbstractField<
     'select',
@@ -157,6 +169,25 @@ export declare type KnFormSelectInputFieldProps<
   ValueType = any
 > = KnFormInputProps<
   KnFormSelectInputField<OptionType>,
+  ValueType
+>
+/**
+ * Radio select input field
+ */
+export declare type KnFormRadioSelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
+  KnFormAbstractField<
+    'radio_select',
+    PreparedQuasarFieldProps<Omit<QOptionGroupProps, 'options'>>
+  >
+  & FieldHasCustomValidationProps & {
+  options: OptionType[],
+  returnObject?: boolean,
+}
+export declare type KnFormRadioSelectInputFieldProps<
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  ValueType = any
+> = KnFormInputProps<
+  KnFormRadioSelectInputField<OptionType>,
   ValueType
 >
 /**
@@ -192,6 +223,7 @@ export declare type KnFormAnyField =
   | KnFormIntInputField
   | KnFormFloatInputField
   | KnFormSelectInputField
+  | KnFormRadioSelectInputField
   | KnFormLazySelectInputField
 export declare type KnFormAnyFieldProps =
   | KnFormLabelInputFieldProps
@@ -199,6 +231,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormIntInputFieldProps
   | KnFormFloatInputFieldProps
   | KnFormSelectInputFieldProps
+  | KnFormRadioSelectInputFieldProps
   | KnFormLazySelectInputFieldProps
 
 export interface KnFormFieldGroup {

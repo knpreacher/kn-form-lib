@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-// import { KnFormLayout, dh } from '../dist'
-import { KnFormLayout, dh, service, types, LazyListView } from '../lib'
+import { ref, useTemplateRef } from 'vue'
+import { KnFormLayout, type KnFormLayoutExpose, dh, service, types, LazyListView, RULES } from '../lib'
+import { QBtn } from 'quasar'
 
 const testData = ref({
   label: 'loooool'
@@ -58,6 +58,9 @@ const testResourceService = new MyResourceService<ApiResponse>({
   itemToOption: item => ({label: item.title, value: String(item.id)})
 })
 
+const rules = RULES()
+
+const knFormRef = useTemplateRef<KnFormLayoutExpose>('form')
 const formLayout = dh.defineKnForm({
   groupDefaults: {
     gutterSize: 'md',
@@ -85,7 +88,12 @@ const formLayout = dh.defineKnForm({
         }),
         dh.defineKnFormIntField({
           dataKey: 'age',
-          label: 'Age'
+          label: 'Age',
+          // inputProps: {
+          //   rules: [
+          //     rules.required()
+          //   ]
+          // }
         }),
         dh.defineKnFormFloatField({
           dataKey: 'weight',
@@ -95,13 +103,13 @@ const formLayout = dh.defineKnForm({
           dataKey: 'label',
           label: 'Label'
         }),
-        dh.defineKnFormSelectField({
+        dh.defineKnFormRadioSelectField({
           dataKey: 'select',
           label: 'Selection',
           returnObject: true,
-          inputProps: {
-            clearable: true,
-          },
+          rules: [
+            rules.required()
+          ],
           options: [
             {
               value: 'kek',
@@ -128,6 +136,13 @@ const formLayout = dh.defineKnForm({
     }
   ]
 })
+
+function validateForm() {
+  console.log('validateForm', knFormRef.value)
+  knFormRef.value?.validate()?.then(res=>{
+    console.warn('res', res)
+  })
+}
 </script>
 
 <template>
@@ -143,7 +158,8 @@ const formLayout = dh.defineKnForm({
   <div>
 <!--    <lazy-list-view :resource-service="testResourceService"/>-->
   </div>
-  <kn-form-layout v-bind="formLayout" v-model="testData"/>
+  <kn-form-layout v-bind="formLayout" v-model="testData" ref="form"/>
+  <q-btn label="Validate" @click="validateForm" />
 </template>
 
 <style scoped>

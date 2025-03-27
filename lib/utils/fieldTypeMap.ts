@@ -7,5 +7,6 @@ export const TYPE_COMPONENT_MAP: Partial<Record<KnFormDataType, any>> = Object.f
     float: fields.KnFormFloatInputField,
     label: fields.KnFormLabelInputField,
     select: fields.KnFormSelectInputField,
+    radio_select: fields.KnFormRadioSelectInputField,
     select_lazy: fields.KnFormLazySelectInputField,
 })

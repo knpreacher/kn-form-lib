@@ -5,7 +5,7 @@ import type {
   KnFormLabelInputField,
   KnFormLayoutData,
   KnFormStringInputField,
-  KnFormSelectInputField, KnSelectDefaultOptionType, KnFormLazySelectInputField,
+  KnFormSelectInputField, KnSelectDefaultOptionType, KnFormLazySelectInputField, KnFormRadioSelectInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 
@@ -39,6 +39,12 @@ function defineKnFormSelectField<OptionType extends KnSelectDefaultOptionType = 
   return Object.assign(options, {dataType: 'select'} as DTAppend) as KnFormSelectInputField<OptionType>
 }
 
+function defineKnFormRadioSelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
+  options: Omit<KnFormRadioSelectInputField, 'dataType'>,
+): KnFormRadioSelectInputField<OptionType> {
+  return Object.assign(options, {dataType: 'radio_select'} as DTAppend) as KnFormRadioSelectInputField<OptionType>
+}
+
 function defineKnFormLazySelectField<
   ServiceType extends AbstractLazyResourceService,
 >(
@@ -57,6 +63,7 @@ export default {
   defineKnFormIntField,
   defineKnFormFloatField,
   defineKnFormSelectField,
+  defineKnFormRadioSelectField,
   defineKnFormLazySelectField,
 
   defineKnForm,
