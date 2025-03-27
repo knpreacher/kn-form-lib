@@ -81,6 +81,8 @@ dh.defineSomeField({
 })
 ```
 
+Localization (use i18n)
+
 ```json
 {
   "rules": {
