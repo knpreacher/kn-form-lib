@@ -54,7 +54,7 @@ export class AbstractLazyResourceService<
   }
 
   get options() {
-    return computed(() => this.items.value.map(this.itemToOption))
+    return computed(() => this.items.value.map((v)=>this.itemToOption(v)))
   }
 
   // @ts-ignore
@@ -107,6 +107,10 @@ export class AbstractLazyResourceService<
 
   isFullyLoaded(): boolean {
     throw new NotImplementedError()
+  }
+
+  itemsEqual(a: DataItem, b: DataItem): boolean {
+    return a === b
   }
 }
 

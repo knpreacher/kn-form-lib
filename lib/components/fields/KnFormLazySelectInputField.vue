@@ -69,6 +69,7 @@ const popupCardStyle = computed<VueStyleObjectProp>(()=>({
           <lazy-list-view
             :resource-service="resourceService"
             :height="optionsHeight"
+            :selected-item="model as {}"
             @on-item-click="onListViewItemClick"
           />
         </q-card>

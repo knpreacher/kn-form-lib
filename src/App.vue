@@ -55,7 +55,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
     return resp.json()
   },
   limit: 50,
-  // itemToOption: item => ({label: item.title, value: String(item.id)})
+  itemToOption: item => ({label: item.title, value: String(item.id)})
 })
 
 const formLayout = dh.defineKnForm({
