@@ -40,8 +40,8 @@ export const RULES = (_options?: RulesOptions) => {
     numSpecialOnly: () => (value: any) => !value || REGEX.NUMBERS_WITH_SPECIALS.test(value) || $t('rules.numSpecialOnly'),
 
     notEqualsTo: (inp: any) => (value: any) => value !== inp || $t('rules.notEqualsTo', {v: inp}),
-    passwordEquals: (inp: any) => (value: any) => value === inp || $t('rules.notEqualsTo'),
-    passwordEqualsRef: (inp: Ref<any>) => (value: any) => value === inp.value || $t('rules.notEqualsTo'),
+    passwordEquals: (inp: any) => (value: any) => value === inp || $t('rules.passwordsNotEquals'),
+    passwordEqualsRef: (inp: Ref<any>) => (value: any) => value === inp.value || $t('rules.passwordsNotEquals'),
 
     counterMax: (count: number) => (value: any) => !value || value?.length < count || $t('rules.counterMax', {n: count}),
     counterMin: (count: number) => (value: any) => !value || value?.length > count || $t('rules.counterMin', {n: count}),
