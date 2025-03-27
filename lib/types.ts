@@ -1,4 +1,5 @@
 import type {
+  QBtnProps,
   QField,
   QIconProps,
   QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QSelectProps,
@@ -88,6 +89,8 @@ export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', 
   gridSize?: GridSizeProps
   wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
   untoggledValue?: any
+
+  prepareValue?: <In = any, Out = any>(value: In) => Out
 
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
@@ -243,6 +246,7 @@ export interface KnFormFieldGroup {
   iconProps?: QIconProps
 
   expandable?: boolean
+  expanded?: boolean
   /**
    * Pass as default to all fields
    */
@@ -262,6 +266,8 @@ export interface KnFormFieldGroupProps extends KnFormFieldGroup {
   headerPadding?: ScreenBreakpoint
 }
 
+export type PreparedQuasarFormButton = Omit<QBtnProps, 'type' | 'disable' | 'onClick' | 'to' | 'target' | 'href'>
+
 export interface KnFormLayoutData {
   /**
    * The groups of the form (required)
@@ -273,4 +279,11 @@ export interface KnFormLayoutData {
    */
   groupDefaults?: Partial<Omit<KnFormFieldGroupProps, 'fields'>>
 
+  useActionButtons?: boolean
+  actionButtonsGutterSize?: ScreenBreakpoint
+  disableValidationOnSubmit?: boolean
+
+  submitButtonProps?: PreparedQuasarFormButton,
+  resetButtonProps?: PreparedQuasarFormButton,
+  cancelButtonProps?: PreparedQuasarFormButton
 }

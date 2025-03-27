@@ -55,14 +55,24 @@ const testResourceService = new MyResourceService<ApiResponse>({
     return resp.json()
   },
   limit: 50,
-  itemToOption: item => ({label: item.title, value: String(item.id)})
+  itemToOption: item => ({ label: item.title, value: String(item.id) })
 })
 
 const rules = RULES()
 
 const knFormRef = useTemplateRef<KnFormLayoutExpose>('form')
 const formLayout = dh.defineKnForm({
+  useActionButtons: true,
+  actionButtonsGutterSize: 'lg',
+  submitButtonProps: {
+    label: 'Submit'
+  },
+  resetButtonProps: {
+    label: 'Reset'
+  },
   groupDefaults: {
+    expandable: true,
+    expanded: true,
     gutterSize: 'md',
     fieldDefaults: {
       gridSize: {
@@ -84,11 +94,11 @@ const formLayout = dh.defineKnForm({
         dh.defineKnFormStringField({
           wrapToggle: true,
           dataKey: 'name',
-          label: 'Name',
+          label: 'Name'
         }),
         dh.defineKnFormIntField({
           dataKey: 'age',
-          label: 'Age',
+          label: 'Age'
           // inputProps: {
           //   rules: [
           //     rules.required()
@@ -130,8 +140,8 @@ const formLayout = dh.defineKnForm({
         dh.defineKnFormLazySelectField({
           label: 'Lazy selection',
           dataKey: 'lazy',
-          resourceService: testResourceService,
-        }),
+          resourceService: testResourceService
+        })
       ]
     }
   ]
@@ -139,7 +149,8 @@ const formLayout = dh.defineKnForm({
 
 function validateForm() {
   console.log('validateForm', knFormRef.value)
-  knFormRef.value?.validate()?.then(res=>{
+  console.log(knFormRef.value?.getValidationComponents())
+  knFormRef.value?.validate()?.then(res => {
     console.warn('res', res)
   })
 }
@@ -147,19 +158,21 @@ function validateForm() {
 
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo"/>
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
-    </a>
+    <div>
+      <a href="https://vite.dev" target="_blank">
+        <img src="/vite.svg" class="logo" alt="Vite logo" />
+      </a>
+      <a href="https://vuejs.org/" target="_blank">
+        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+      </a>
+    </div>
+    <div v-text="testData"></div>
+    <div>
+      <!--    <lazy-list-view :resource-service="testResourceService"/>-->
+    </div>
+    <kn-form-layout v-bind="formLayout" v-model="testData" ref="form" />
+    <q-btn label="Validate" @click="validateForm" />
   </div>
-  <div v-text="testData"></div>
-  <div>
-<!--    <lazy-list-view :resource-service="testResourceService"/>-->
-  </div>
-  <kn-form-layout v-bind="formLayout" v-model="testData" ref="form"/>
-  <q-btn label="Validate" @click="validateForm" />
 </template>
 
 <style scoped>

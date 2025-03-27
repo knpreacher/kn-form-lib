@@ -46,7 +46,7 @@ export const useKnCustomField = <
         return false
       }
     }
-
+    errorMessage.value = ''
     return true
   }
 

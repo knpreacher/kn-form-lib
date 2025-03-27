@@ -8,6 +8,7 @@ import * as service from './utils/lazyResourceService.ts'
 import * as jsUtils from './utils/jsUtils'
 import { RULES } from './validation/rules.ts'
 import LazyListView from './components/extensions/LazyListView.vue'
+import Pass from './components/helpers/Pass.vue'
 
 import * as types from './types.ts'
 
@@ -18,6 +19,7 @@ export {
   KnFormInputField,
   KnFormInputGroup,
   LazyListView,
+  Pass,
   RULES,
   dh, fields, service, types, jsUtils
 }

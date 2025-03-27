@@ -1,37 +1,65 @@
 <script setup lang="ts">
-import type {KnFormLayoutData, KnFormModelData} from '../types.ts'
-import {useVModel, type VModelEmitter, type VModelProps} from '../utils/useVModel.ts'
-import { computed, type Ref, useTemplateRef } from 'vue'
-import {QForm} from 'quasar';
-import {getGroupProps} from '../utils/formUtils.ts'
+import type { KnFormLayoutData, KnFormModelData, PreparedQuasarFormButton, ScreenBreakpoint } from '../types.ts'
+import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
+import { computed, inject, useTemplateRef } from 'vue'
+import { QForm, QBtn, QSpace, type QFormChildComponent } from 'quasar'
+import { getGroupProps } from '../utils/formUtils.ts'
 import KnFormInputGroup from './KnFormInputGroup.vue'
 
 defineOptions({
   name: 'KnFormLayout'
 })
 
+const isDebug = inject<boolean>('$knDebug', false)
+
 // export type KnFormLayoutExpose = Partial<Pick<QForm, 'validate' | 'getValidationComponents' | 'resetValidation' | 'reset'>>
 export type KnFormLayoutExpose = {
-  validate: (shouldFocus?: boolean) => Promise<boolean> | undefined
+  validate: (shouldFocus?: boolean) => Promise<boolean> | undefined,
+  getValidationComponents: () => QFormChildComponent[] | undefined
 }
 // export type KnFormLayoutExpose = {
 //   form: Ref<QForm | null>
 // }
 
 const props = defineProps<KnFormLayoutData & VModelProps<KnFormModelData>>()
-const emit = defineEmits<VModelEmitter<KnFormModelData>>()
+const emit = defineEmits<
+  VModelEmitter<KnFormModelData> & {
+  'submitBeforeValidate': [data: KnFormModelData],
+  'submit': [data: KnFormModelData],
+  'cancel': [data: KnFormModelData],
+  'reset': [data: KnFormModelData],
+}
+>()
 
-const {model} = useVModel(props, emit)
+const { model } = useVModel(props, emit)
 
 const groups = computed(
-    () => props.groups.map(g => getGroupProps(g, props.groupDefaults))
+  () => props.groups.map(g => getGroupProps(g, props.groupDefaults))
 )
 
 const formRef = useTemplateRef<QForm>('formRef')
 
-function onFormSubmit(data: any) {
-  console.log(formRef.value)
-  console.log('SUBMIT', data)
+function onFormSubmit() {
+  const data = model.value
+  isDebug && console.log('SUBMIT', data)
+  emit('submitBeforeValidate', data)
+  if (props.disableValidationOnSubmit) {
+    emit('submit', model.value)
+    return
+  }
+  validate(true)?.then(value => {
+    if (!value) return
+    emit('submit', data)
+  })
+}
+
+function onFormReset() {
+  formRef.value?.resetValidation()
+  emit('reset', model.value)
+}
+
+function onFormCancel() {
+  emit('cancel', model.value)
 }
 
 
@@ -39,9 +67,33 @@ function validate(shouldFocus?: boolean) {
   return formRef.value?.validate(shouldFocus)
 }
 
+function getValidationComponents() {
+  return formRef.value?.getValidationComponents()
+}
+
+const actionButtonsGutterSizeClass = computed(
+  () => props.actionButtonsGutterSize ?
+    `q-gutter-${props.actionButtonsGutterSize}` :
+    undefined
+)
+
 defineExpose<KnFormLayoutExpose>({
-  validate
+  validate,
+  getValidationComponents
 })
+
+defineSlots<{
+  before: () => any
+  after: () => any
+  buttons: (
+    props: {
+      gutter?: ScreenBreakpoint,
+      cancelButtonProps?: PreparedQuasarFormButton
+      resetButtonProps?: PreparedQuasarFormButton
+      submitButtonProps?: PreparedQuasarFormButton
+    }
+  ) => any
+}>()
 </script>
 
 <template>
@@ -49,12 +101,36 @@ defineExpose<KnFormLayoutExpose>({
     ref="formRef"
     class="kn-form-layout" @submit.prevent="onFormSubmit"
   >
+    <slot name="before"></slot>
     <kn-form-input-group
-        v-for="(g, g_index) in groups" :key="g.groupKey ?? `group__${g_index}`"
-        v-bind="g" v-model="model"
+      v-for="(g, g_index) in groups" :key="g.groupKey ?? `group__${g_index}`"
+      v-bind="g" v-model="model"
     >
-
     </kn-form-input-group>
-    <button type="submit"></button>
+    <slot name="after"></slot>
+    <slot
+      name="buttons"
+      v-if="useActionButtons"
+      :gutter="actionButtonsGutterSize"
+      :cancel-button-props="cancelButtonProps"
+      :reset-button-props="resetButtonProps"
+      :submit-button-props="submitButtonProps"
+    >
+      <div class="row items-center kn-form-layout__buttons" :class="actionButtonsGutterSizeClass">
+        <q-btn
+          v-if="cancelButtonProps" v-bind="cancelButtonProps"
+          type="button" @click="onFormCancel"
+        />
+        <q-space />
+        <q-btn
+          v-if="resetButtonProps" v-bind="resetButtonProps"
+          type="reset" @click="onFormReset"
+        />
+        <q-btn
+          v-if="submitButtonProps" v-bind="submitButtonProps"
+          type="submit" @click="onFormSubmit"
+        />
+      </div>
+    </slot>
   </q-form>
 </template>

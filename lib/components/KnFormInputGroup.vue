@@ -6,8 +6,8 @@ import type {
 } from '../types.ts'
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
 import type { VueClassObjectProp } from 'quasar'
-import { computed } from 'vue'
-import { QIcon } from 'quasar'
+import { computed, ref } from 'vue'
+import { QExpansionItem, QIcon } from 'quasar'
 import { getFieldProps } from '../utils/formUtils.ts'
 import KnFormInputFieldWrapper from './KnFormInputFieldWrapper.vue'
 
@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<KnFormFieldGroupProps & VModelProps<KnFor
 })
 const emit = defineEmits<VModelEmitter<KnFormModelData>>()
 
-const {model} = useVModel(props, emit)
+const { model } = useVModel(props, emit)
+const expanded = ref(props.expandable ? props.expanded : true)
 
 const fields = computed(
   () => props.fields.filter(
@@ -51,9 +52,23 @@ const fieldRowClasses: VueClassObjectProp = {
 }
 </script>
 <template>
-  <div class="kn-form-input-group">
+  <q-expansion-item
+    v-if="expandable"
+    :label="label"
+    :icon="iconProps?.name"
+    v-model="expanded"
+  >
+    <div class="row fit" :class="fieldRowClasses">
+      <kn-form-input-field-wrapper
+        v-for="f in fields" :key="f.dataKey"
+        v-model="model[f.dataKey]"
+        :field-props="f"
+      />
+    </div>
+  </q-expansion-item>
+  <div class="kn-form-input-group" v-else>
     <div class="row items-center full-width q-gutter-x-sm kn-form-input-group__header">
-      <q-icon v-if="props.iconProps" v-bind="props.iconProps"/>
+      <q-icon v-if="props.iconProps" v-bind="props.iconProps" />
       <div v-if="label" class="kn-form-input-group__label" v-html="label"></div>
     </div>
     <div class="row fit" :class="fieldRowClasses">
