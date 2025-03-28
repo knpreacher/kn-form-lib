@@ -62,6 +62,7 @@ const fieldRowClasses: VueClassObjectProp = {
       <kn-form-input-field-wrapper
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
+        :field-defaults="fieldDefaults"
         :field-props="f"
       />
     </div>

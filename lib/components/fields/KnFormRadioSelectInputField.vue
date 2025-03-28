@@ -34,8 +34,8 @@ const displayOptionText = (o: OptionType): string => {
 const { errorMessage } = useKnCustomField(props, model)
 </script>
 <template>
-  <div>
-    <input type="hidden" v-model="model">
+  <div class="kn-form-radio-select-input">
+    <div class="kn-form-radio-select-input__label" v-text="label"></div>
     <q-option-group
       v-model="model"
       :color="inputProps?.color ?? 'primary'"

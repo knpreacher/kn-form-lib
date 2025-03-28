@@ -5,7 +5,11 @@ import type {
   KnFormLabelInputField,
   KnFormLayoutData,
   KnFormStringInputField,
-  KnFormSelectInputField, KnSelectDefaultOptionType, KnFormLazySelectInputField, KnFormRadioSelectInputField
+  KnFormSelectInputField,
+  KnSelectDefaultOptionType,
+  KnFormLazySelectInputField,
+  KnFormRadioSelectInputField,
+  KnFormInnerFormInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 
@@ -62,6 +66,13 @@ function defineKnFormLazySelectField<
   return Object.assign(options, { dataKey, dataType: 'select_lazy' } as DTAppend) as unknown as KnFormLazySelectInputField<ServiceType>
 }
 
+function defineKnFormInnerFormField(
+  dataKey: string,
+  options: Omit<KnFormInnerFormInputField, 'dataType' | 'dataKey'>
+): KnFormInnerFormInputField {
+  return Object.assign(options, { dataKey, dataType: 'inner_form' } as DTAppend) as KnFormInnerFormInputField
+}
+
 function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
   return options
 }
@@ -74,6 +85,7 @@ export default {
   defineKnFormSelectField,
   defineKnFormRadioSelectField,
   defineKnFormLazySelectField,
+  defineKnFormInnerFormField,
 
   defineKnForm
 }

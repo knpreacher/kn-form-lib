@@ -1,7 +1,7 @@
 <script lang="ts" setup generic="FieldProps extends KnFormAnyFieldProps, ValueType = any">
 
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
-import type { KnFormAnyFieldProps } from '../types.ts'
+import type { KnFormAnyFieldProps, SharedKnFormFieldData } from '../types.ts'
 import type { QToggleProps } from 'quasar'
 import { QToggle } from 'quasar'
 import { ref, watch } from 'vue'
@@ -16,6 +16,7 @@ defineOptions({
 
 const {fieldProps, modelValue} = defineProps<{
   fieldProps: Omit<FieldProps, 'modelValue'>,
+  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
 } & VModelProps<ValueType>>()
 const emit = defineEmits<VModelEmitter<ValueType>>()
 
@@ -50,8 +51,16 @@ const columnClass = getGridClass(fieldProps.gridSize)
   <div class="kn-form-input-field-wrapper" :class="columnClass">
     <div v-if="useToggle">
       <q-toggle v-model="toggled" v-bind="toggleProps"/>
-      <component v-if="toggled" v-bind="fieldProps as {}" :is="componentToBeMount" v-model="model"/>
+      <component
+        v-if="toggled" v-bind="fieldProps as {}"
+        :field-defaults="fieldDefaults"
+        :is="componentToBeMount" v-model="model"
+      />
     </div>
-    <component v-else v-bind="fieldProps as {}" :is="componentToBeMount" v-model="model"/>
+    <component
+      v-else v-bind="fieldProps as {}"
+      :field-defaults="fieldDefaults"
+      :is="componentToBeMount" v-model="model"
+    />
   </div>
 </template>

@@ -1,5 +1,6 @@
-import type {Ref} from 'vue';
-import {type DefineProps, ref, watch} from 'vue';
+import type { Ref } from 'vue'
+import { type DefineProps, ref, watch } from 'vue'
+// import { isEmpty } from '../utils/jsUtils'
 
 export const MODEL_DEFAULT_EMIT = 'update:modelValue'
 
@@ -46,6 +47,11 @@ export function useVModel<T = unknown>(
   const model = ref<T>(getModelValue(props.modelValue, props?.defaultValue ?? _default)) as unknown as Ref<T>
   watch(model, (value) => {
     emit(MODEL_DEFAULT_EMIT, value as T)
+    // if (isEmpty(value)) {
+    //   emit(MODEL_DEFAULT_EMIT, undefined as unknown as T)
+    // } else {
+    //   emit(MODEL_DEFAULT_EMIT, value as T)
+    // }
   }, {
     deep: true
   })

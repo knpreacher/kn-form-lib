@@ -57,6 +57,7 @@ export declare type KnFormDataType =
   | 'select'
   | 'radio_select'
   | 'select_lazy'
+  | 'inner_form'
 
 //
 // Utilities
@@ -217,6 +218,21 @@ export declare type KnFormLazySelectInputFieldProps<
   KnFormLazySelectInputField,
   ValueType
 >
+//
+// Inner form
+//
+export declare type KnFormInnerFormInputField = KnFormAbstractField<
+  'inner_form',
+  {}
+> & FieldHasCustomValidationProps & {
+  fieldGutter?: ScreenBreakpoint
+  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
+  fields: KnFormAnyField[]
+}
+export declare type KnFormInnerFormInputFieldProps = KnFormInputProps<
+  KnFormInnerFormInputField,
+  { [key: string]: any } | undefined
+>
 /**
  * All
  */
@@ -228,6 +244,7 @@ export declare type KnFormAnyField =
   | KnFormSelectInputField
   | KnFormRadioSelectInputField
   | KnFormLazySelectInputField
+  | KnFormInnerFormInputField
 export declare type KnFormAnyFieldProps =
   | KnFormLabelInputFieldProps
   | KnFormStringInputFieldProps
@@ -236,6 +253,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormSelectInputFieldProps
   | KnFormRadioSelectInputFieldProps
   | KnFormLazySelectInputFieldProps
+  | KnFormInnerFormInputFieldProps
 
 export interface KnFormFieldGroup {
   /**

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { KnFormLayout, dh, service, types, LazyListView, RULES } from '../lib'
+import { KnFormLayout, dh, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
 
 import { QBtn } from 'quasar'
 
@@ -63,7 +63,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
 
 const rules = RULES()
 
-const knFormRef = useTemplateRef('form')
+const knFormRef = useTemplateRef<KnFormLayoutExpose>('form')
 const formLayout = dh.defineKnForm({
   useActionButtons: true,
   actionButtonsGutterSize: 'lg',
@@ -94,13 +94,23 @@ const formLayout = dh.defineKnForm({
     {
       label: 'kek',
       fields: [
-        dh.defineKnFormStringField({
+        dh.defineKnFormStringField('name', {
           wrapToggle: true,
-          dataKey: 'name',
           label: 'Name'
         }),
-        dh.defineKnFormIntField({
-          dataKey: 'age',
+        dh.defineKnFormInnerFormField('inner', {
+          label: 'Inner',
+          fieldGutter: 'md',
+          fields: [
+            dh.defineKnFormStringField('name', {
+              label: 'Inner Name'
+            }),
+            dh.defineKnFormIntField('age', {
+              label: 'Inner Age'
+            })
+          ]
+        }),
+        dh.defineKnFormIntField('age', {
           label: 'Age'
           // inputProps: {
           //   rules: [
@@ -108,16 +118,13 @@ const formLayout = dh.defineKnForm({
           //   ]
           // }
         }),
-        dh.defineKnFormFloatField({
-          dataKey: 'weight',
+        dh.defineKnFormFloatField('weight',{
           label: 'Weight'
         }),
-        dh.defineKnLabelField({
-          dataKey: 'label',
+        dh.defineKnFormLabelField('label',{
           label: 'Label'
         }),
-        dh.defineKnFormRadioSelectField({
-          dataKey: 'select',
+        dh.defineKnFormRadioSelectField('select', {
           label: 'Selection',
           returnObject: true,
           rules: [
@@ -140,9 +147,8 @@ const formLayout = dh.defineKnForm({
             }
           ]
         }),
-        dh.defineKnFormLazySelectField({
+        dh.defineKnFormLazySelectField('lazy', {
           label: 'Lazy selection',
-          dataKey: 'lazy',
           resourceService: testResourceService
         })
       ]
