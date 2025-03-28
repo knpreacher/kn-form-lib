@@ -70,7 +70,7 @@ const popupCardStyle = computed<VueStyleObjectProp>(()=>({
             :resource-service="resourceService"
             :height="optionsHeight"
             :selected-item="model as {}"
-            @on-item-click="onListViewItemClick"
+            @on-item-click="onListViewItemClick as any"
           />
         </q-card>
       </q-popup-proxy>

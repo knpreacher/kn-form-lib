@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { KnFormLayout, type KnFormLayoutExpose, dh, service, types, LazyListView, RULES } from '../lib'
+import { KnFormLayout, dh, service, types, LazyListView, RULES } from '../lib'
+
 import { QBtn } from 'quasar'
 
 const testData = ref({
-  label: 'loooool'
+  label: 'loooool',
+  name: 'name 1234',
+  age: 123,
 })
 
 interface ApiResponseItem {
@@ -60,7 +63,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
 
 const rules = RULES()
 
-const knFormRef = useTemplateRef<KnFormLayoutExpose>('form')
+const knFormRef = useTemplateRef('form')
 const formLayout = dh.defineKnForm({
   useActionButtons: true,
   actionButtonsGutterSize: 'lg',

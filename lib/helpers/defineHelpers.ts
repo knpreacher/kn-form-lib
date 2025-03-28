@@ -9,48 +9,57 @@ import type {
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 
-type DTAppend = { dataType: KnFormDataType }
+type DTAppend = { dataType: KnFormDataType, dataKey: string }
 
-function defineKnLabelField(
-  options: Omit<KnFormLabelInputField, 'dataType'>,
+function defineKnFormLabelField(
+  dataKey: string,
+  options: Omit<KnFormLabelInputField, 'dataType' | 'dataKey'>
 ): KnFormLabelInputField {
-  return Object.assign(options, {dataType: 'label'} as DTAppend) as KnFormLabelInputField
+  return Object.assign(options, { dataKey, dataType: 'label' } as DTAppend) as KnFormLabelInputField
 }
 
 function defineKnFormStringField(
-  options: Omit<KnFormStringInputField, 'dataType'>,
+  dataKey: string,
+  options: Omit<KnFormStringInputField, 'dataType' | 'dataKey'>
 ): KnFormStringInputField {
-  return Object.assign(options, {dataType: 'str'} as DTAppend) as KnFormStringInputField
+  return Object.assign(options, { dataKey, dataType: 'str' } as DTAppend) as KnFormStringInputField
 }
 
-function defineKnFormIntField(options: Omit<KnFormIntInputField, 'dataType'>): KnFormIntInputField {
-  return Object.assign(options, {dataType: 'int'} as DTAppend) as KnFormIntInputField
+function defineKnFormIntField(
+  dataKey: string,
+  options: Omit<KnFormIntInputField, 'dataType' | 'dataKey'>
+): KnFormIntInputField {
+  return Object.assign(options, { dataKey, dataType: 'int' } as DTAppend) as KnFormIntInputField
 }
 
 function defineKnFormFloatField(
-  options: Omit<KnFormFloatInputField, 'dataType'>,
+  dataKey: string,
+  options: Omit<KnFormFloatInputField, 'dataType' | 'dataKey'>
 ): KnFormFloatInputField {
-  return Object.assign(options, {dataType: 'float'} as DTAppend) as KnFormFloatInputField
+  return Object.assign(options, { dataKey, dataType: 'float' } as DTAppend) as KnFormFloatInputField
 }
 
 function defineKnFormSelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
-  options: Omit<KnFormSelectInputField, 'dataType'>,
+  dataKey: string,
+  options: Omit<KnFormSelectInputField, 'dataType' | 'dataKey'>
 ): KnFormSelectInputField<OptionType> {
-  return Object.assign(options, {dataType: 'select'} as DTAppend) as KnFormSelectInputField<OptionType>
+  return Object.assign(options, { dataKey, dataType: 'select' } as DTAppend) as KnFormSelectInputField<OptionType>
 }
 
 function defineKnFormRadioSelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
-  options: Omit<KnFormRadioSelectInputField, 'dataType'>,
+  dataKey: string,
+  options: Omit<KnFormRadioSelectInputField, 'dataType' | 'dataKey'>
 ): KnFormRadioSelectInputField<OptionType> {
-  return Object.assign(options, {dataType: 'radio_select'} as DTAppend) as KnFormRadioSelectInputField<OptionType>
+  return Object.assign(options, { dataKey, dataType: 'radio_select' } as DTAppend) as KnFormRadioSelectInputField<OptionType>
 }
 
 function defineKnFormLazySelectField<
   ServiceType extends AbstractLazyResourceService,
 >(
-  options: Omit<KnFormLazySelectInputField, 'dataType'>,
+  dataKey: string,
+  options: Omit<KnFormLazySelectInputField, 'dataType' | 'dataKey'>
 ): KnFormLazySelectInputField {
-  return Object.assign(options, {dataType: 'select_lazy'} as DTAppend) as unknown as KnFormLazySelectInputField<ServiceType>
+  return Object.assign(options, { dataKey, dataType: 'select_lazy' } as DTAppend) as unknown as KnFormLazySelectInputField<ServiceType>
 }
 
 function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
@@ -58,7 +67,7 @@ function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
 }
 
 export default {
-  defineKnLabelField,
+  defineKnFormLabelField,
   defineKnFormStringField,
   defineKnFormIntField,
   defineKnFormFloatField,
@@ -66,5 +75,5 @@ export default {
   defineKnFormRadioSelectField,
   defineKnFormLazySelectField,
 
-  defineKnForm,
+  defineKnForm
 }
