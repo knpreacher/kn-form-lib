@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { KnFormLayout, dh, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
+import { KnFormLayout, KnFormDialog, dh, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
 
-import { QBtn } from 'quasar'
+import { Dialog, QBtn, useQuasar } from 'quasar'
 
 const testData = ref({
   label: 'loooool',
@@ -58,7 +58,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
     return resp.json()
   },
   limit: 50,
-  itemToOption: item => ({ label: item.title, value: String(item.id) })
+  itemToOption: item => ({label: item.title, value: String(item.id)})
 })
 
 const rules = RULES()
@@ -118,10 +118,10 @@ const formLayout = dh.defineKnForm({
           //   ]
           // }
         }),
-        dh.defineKnFormFloatField('weight',{
+        dh.defineKnFormFloatField('weight', {
           label: 'Weight'
         }),
-        dh.defineKnFormLabelField('label',{
+        dh.defineKnFormLabelField('label', {
           label: 'Label'
         }),
         dh.defineKnFormRadioSelectField('select', {
@@ -156,6 +156,22 @@ const formLayout = dh.defineKnForm({
   ]
 })
 
+const $q = useQuasar()
+
+function showDialog() {
+  console.log('$q', $q, $q.dialog)
+  $q.dialog({
+    component: () => KnFormDialog,
+    componentProps: {
+      formData: formLayout,
+      initialValue: testData.value
+    }
+  }).onOk(data => {
+    console.log('Dialog OK:', data)
+    testData.value = data
+  })
+}
+
 function validateForm() {
   console.log('validateForm', knFormRef.value)
   console.log(knFormRef.value?.getValidationComponents())
@@ -169,18 +185,21 @@ function validateForm() {
   <div>
     <div>
       <a href="https://vite.dev" target="_blank">
-        <img src="/vite.svg" class="logo" alt="Vite logo" />
+        <img src="/vite.svg" class="logo" alt="Vite logo"/>
       </a>
       <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo"/>
       </a>
     </div>
     <div v-text="testData"></div>
     <div>
       <!--    <lazy-list-view :resource-service="testResourceService"/>-->
     </div>
-    <kn-form-layout v-bind="formLayout" v-model="testData" ref="form" />
-    <q-btn label="Validate" @click="validateForm" />
+    <div>
+      <q-btn label="Dialog" @click="showDialog"/>
+    </div>
+    <kn-form-layout v-bind="formLayout" v-model="testData" ref="form"/>
+    <q-btn label="Validate" @click="validateForm"/>
   </div>
 </template>
 

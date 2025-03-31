@@ -15,7 +15,8 @@ const isDebug = inject<boolean>('$knDebug', false)
 // export type KnFormLayoutExpose = Partial<Pick<QForm, 'validate' | 'getValidationComponents' | 'resetValidation' | 'reset'>>
 export type KnFormLayoutExpose = {
   validate: (shouldFocus?: boolean) => Promise<boolean> | undefined,
-  getValidationComponents: () => QFormChildComponent[] | undefined
+  getValidationComponents: () => QFormChildComponent[] | undefined,
+  submit: () => void
 }
 // export type KnFormLayoutExpose = {
 //   form: Ref<QForm | null>
@@ -38,6 +39,10 @@ const groups = computed(
 )
 
 const formRef = useTemplateRef<QForm>('formRef')
+
+function exposedSubmit() {
+  formRef.value?.submit()
+}
 
 function onFormSubmit() {
   const data = model.value
@@ -79,7 +84,8 @@ const actionButtonsGutterSizeClass = computed(
 
 defineExpose<KnFormLayoutExpose>({
   validate,
-  getValidationComponents
+  getValidationComponents,
+  submit: exposedSubmit
 })
 
 defineSlots<{

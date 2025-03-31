@@ -1,5 +1,6 @@
 import dh from './helpers/defineHelpers.ts'
 import KnFormLayout from './components/KnFormLayout.vue'
+import KnFormDialog from './components/KnFormDialog.vue'
 import type { KnFormLayoutExpose } from './components/KnFormLayout.vue'
 import KnFormInputField from './components/KnFormInputFieldWrapper.vue'
 import KnFormInputGroup from './components/KnFormInputGroup.vue'
@@ -16,6 +17,7 @@ export type { KnFormLayoutExpose }
 
 export {
   KnFormLayout,
+  KnFormDialog,
   KnFormInputField,
   KnFormInputGroup,
   LazyListView,
