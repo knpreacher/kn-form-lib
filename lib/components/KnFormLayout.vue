@@ -5,12 +5,13 @@ import { computed, inject, useTemplateRef } from 'vue'
 import { QForm, QBtn, QSpace, type QFormChildComponent } from 'quasar'
 import { getGroupProps } from '../utils/formUtils.ts'
 import KnFormInputGroup from './KnFormInputGroup.vue'
+import { Consts } from '../consts.ts'
 
 defineOptions({
   name: 'KnFormLayout'
 })
 
-const isDebug = inject<boolean>('$knDebug', false)
+const isDebug = inject<boolean>(Consts.debugInjectKey, false)
 
 // export type KnFormLayoutExpose = Partial<Pick<QForm, 'validate' | 'getValidationComponents' | 'resetValidation' | 'reset'>>
 export type KnFormLayoutExpose = {
@@ -105,7 +106,7 @@ defineSlots<{
 <template>
   <q-form
     ref="formRef"
-    class="kn-form-layout" @submit.prevent="onFormSubmit"
+    class="kn-form-layout" @submit="onFormSubmit"
   >
     <slot name="before"></slot>
     <kn-form-input-group

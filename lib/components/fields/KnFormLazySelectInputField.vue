@@ -6,8 +6,9 @@ import type {
 import { type VModelEmitter } from '../../utils/useVModel'
 import { QField, QPopupProxy, QCard, type VueStyleObjectProp } from 'quasar'
 import { useKnFormField } from '../../helpers/useHelpers.ts'
-import { computed, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import LazyListView from './../extensions/LazyListView.vue'
+import { Consts } from '../../consts.ts'
 
 defineOptions({
   name: 'KnFormLazySelectInputField'
@@ -21,6 +22,8 @@ interface QFieldControlSlotScope {
   focused: boolean,
   floatingLabel: boolean
 }
+
+const isDebug = inject<boolean>(Consts.debugInjectKey, false)
 
 const props = withDefaults(defineProps<KnFormLazySelectInputFieldProps<ValueType>>(), {
   optionsHeight: 200,
@@ -40,7 +43,7 @@ const itemToString = (item: ValueType) => {
 }
 
 function onListViewItemClick(item: ValueType) {
-  console.warn(item)
+  isDebug && console.warn(item)
   model.value = item
   popupOpened.value = false
 }

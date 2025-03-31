@@ -132,7 +132,6 @@ function deepJoinObjects<Type = unknown>(...objs: Type[]): Type {
       }
     )
   })
-  // console.log('call deepJoinObjects', objs, result)
   return result
 }
 

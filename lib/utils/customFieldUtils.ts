@@ -51,7 +51,6 @@ export const useKnCustomField = <
   }
 
   const resetValidation = () => {
-    console.log('resetValidation')
     errorMessage.value = ''
   }
 

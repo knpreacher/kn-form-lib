@@ -9,9 +9,12 @@ import type {
   KnSelectDefaultOptionType,
   KnFormLazySelectInputField,
   KnFormRadioSelectInputField,
-  KnFormInnerFormInputField
+  KnFormInnerFormInputField, KnFormDialogProps
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
+import type { DialogChainObject, QVueGlobals } from 'quasar'
+import { Dialog } from 'quasar'
+import KnFormDialog from '../components/KnFormDialog.vue'
 
 type DTAppend = { dataType: KnFormDataType, dataKey: string }
 
@@ -77,6 +80,15 @@ function defineKnForm(options: KnFormLayoutData): KnFormLayoutData {
   return options
 }
 
+function defineKnFormDialog(options: KnFormDialogProps, $q?: QVueGlobals): DialogChainObject {
+  const dialogFn = $q?.dialog ?? Dialog.create
+
+  return dialogFn({
+    component: KnFormDialog as any,
+    componentProps: options
+  })
+}
+
 export default {
   defineKnFormLabelField,
   defineKnFormStringField,
@@ -87,5 +99,6 @@ export default {
   defineKnFormLazySelectField,
   defineKnFormInnerFormField,
 
+  defineKnFormDialog,
   defineKnForm
 }

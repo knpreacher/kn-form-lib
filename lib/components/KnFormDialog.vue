@@ -7,18 +7,17 @@ import {
   QCardSection,
   QCardActions,
   QScrollArea,
-  useDialogPluginComponent
+  useDialogPluginComponent, type VueStyleObjectProp
 } from 'quasar'
-import { type KnFormLayoutData } from '../types.ts'
+import { type KnFormDialogProps } from '../types.ts'
 import KnFormLayout from '../components/KnFormLayout.vue'
 import { computed, type Ref, ref } from 'vue'
 import type { KnFormLayoutExpose } from './KnFormLayout.vue'
 
-const props = defineProps<{
-  formData: KnFormLayoutData,
-  initialValue?: Partial<KnFormLayoutData>,
-  title?: string
-}>()
+const props = withDefaults(defineProps<KnFormDialogProps>(), {
+  maxWidth: '300px',
+  maxHeight: '200px'
+})
 defineEmits(
   useDialogPluginComponent.emits
 )
@@ -46,6 +45,13 @@ const actionButtonsGutterSizeClass = computed(
     undefined
 )
 
+const scrollAreaStyle: VueStyleObjectProp = {
+  maxHeight: props.maxHeight,
+  maxWidth: props.maxWidth,
+  height: '80vh',
+  width: '90vw'
+}
+
 function onFormSubmitClick() {
   formRef.value?.submit()
 }
@@ -68,19 +74,21 @@ defineSlots<{
 </script>
 
 <template>
-  <q-dialog ref="dialogRef" :model-value="true">
+  <q-dialog ref="dialogRef" v-bind="dialogProps" :model-value="true">
     <q-card>
       <slot name="title" v-if="title">
-        <q-card-section class="row items-center" style="max-width: 200px">
+        <q-card-section class="row items-center no-wrap" :style="{maxWidth}">
           <div v-text="title" class="ellipsis"></div>
           <q-space />
+          <q-btn flat dense round icon="close" @click="onDialogCancel"  />
         </q-card-section>
       </slot>
-      <q-scroll-area style="max-height: 200px;height: 80vh; max-width: 200px; width: 90vw" visible>
+      <q-scroll-area :style="scrollAreaStyle" v-bind="scrollAreaProps">
         <q-card-section :class="title ? 'q-pt-none' : ''">
           <kn-form-layout
             v-bind="formData"
             v-model="model"
+            ref="formRef"
             @submit="onFormSubmit as any"
             :use-action-buttons="false"
           >

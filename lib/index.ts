@@ -11,6 +11,8 @@ import { RULES } from './validation/rules.ts'
 import LazyListView from './components/extensions/LazyListView.vue'
 import Pass from './components/helpers/Pass.vue'
 
+import { Consts } from './consts.ts'
+
 import * as types from './types.ts'
 
 export type { KnFormLayoutExpose }
@@ -22,6 +24,7 @@ export {
   KnFormInputGroup,
   LazyListView,
   Pass,
+  Consts,
   RULES,
   dh, fields, service, types, jsUtils
 }

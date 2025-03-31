@@ -1,8 +1,8 @@
 import type {
-  QBtnProps,
+  QBtnProps, QDialogProps,
   QField,
   QIconProps,
-  QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QSelectProps,
+  QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QScrollAreaProps, QSelectProps,
   QToggleProps,
   VueClassProp
 } from 'quasar'
@@ -304,4 +304,14 @@ export interface KnFormLayoutData {
   submitButtonProps?: PreparedQuasarFormButton,
   resetButtonProps?: PreparedQuasarFormButton,
   cancelButtonProps?: PreparedQuasarFormButton
+}
+
+export interface KnFormDialogProps {
+  formData: KnFormLayoutData,
+  initialValue?: any,
+  title?: string,
+  maxWidth?: string,
+  maxHeight?: string,
+  dialogProps?: Omit<QDialogProps, 'modelValue' | 'onUpdate:modelValue'>
+  scrollAreaProps?: QScrollAreaProps
 }
