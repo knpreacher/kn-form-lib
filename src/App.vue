@@ -3,6 +3,7 @@ import { ref, useTemplateRef } from 'vue'
 import { KnFormLayout, KnFormDialog, dh, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
 
 import { Dialog, QBtn, useQuasar } from 'quasar'
+import { title } from 'node:process';
 
 const testData = ref({
   label: 'loooool',
@@ -83,9 +84,11 @@ const formLayout = dh.defineKnForm({
         sm: 12,
         md: 6,
         lg: 4,
-        xl: 3
+        xl: 3,
+        fit: true
       },
       inputProps: {
+        dense: true,
         outlined: true
       }
     }
@@ -161,10 +164,11 @@ const $q = useQuasar()
 function showDialog() {
   console.log('$q', $q, $q.dialog)
   $q.dialog({
-    component: () => KnFormDialog,
+    component: KnFormDialog,
     componentProps: {
       formData: formLayout,
-      initialValue: testData.value
+      initialValue: testData.value,
+      title: 'Test dialog form lorem ipsum asjkh hsjhas jhas'
     }
   }).onOk(data => {
     console.log('Dialog OK:', data)
