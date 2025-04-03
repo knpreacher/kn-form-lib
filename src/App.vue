@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue'
-import { KnFormLayout, KnFormDialog, dh, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
+import { KnFormLayout, KnFormDialog, kn, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
 
 import { Dialog, QBtn, useQuasar } from 'quasar'
 
@@ -64,7 +64,7 @@ const testResourceService = new MyResourceService<ApiResponse>({
 const rules = RULES()
 
 const knFormRef = useTemplateRef<KnFormLayoutExpose>('form')
-const formLayout = dh.defineKnForm({
+const formLayout = kn.form({
   useActionButtons: true,
   actionButtonsGutterSize: 'lg',
   submitButtonProps: {
@@ -83,8 +83,7 @@ const formLayout = dh.defineKnForm({
         sm: 12,
         md: 6,
         lg: 4,
-        xl: 3,
-        fit: true
+        xl: 3
       },
       inputProps: {
         dense: true,
@@ -96,23 +95,24 @@ const formLayout = dh.defineKnForm({
     {
       label: 'kek',
       fields: [
-        dh.defineKnFormStringField('name', {
+        kn.string('name', {
           wrapToggle: true,
+          // showIf: (allData) => allData.age > 10,
           label: 'Name'
         }),
-        dh.defineKnFormInnerFormField('inner', {
+        kn.innerForm('inner', {
           label: 'Inner',
           fieldGutter: 'md',
           fields: [
-            dh.defineKnFormStringField('name', {
+            kn.string('name', {
               label: 'Inner Name'
             }),
-            dh.defineKnFormIntField('age', {
+            kn.int('age', {
               label: 'Inner Age'
             })
           ]
         }),
-        dh.defineKnFormIntField('age', {
+        kn.int('age', {
           label: 'Age'
           // inputProps: {
           //   rules: [
@@ -120,13 +120,13 @@ const formLayout = dh.defineKnForm({
           //   ]
           // }
         }),
-        dh.defineKnFormFloatField('weight', {
+        kn.float('weight', {
           label: 'Weight'
         }),
-        dh.defineKnFormLabelField('label', {
+        kn.label('label', {
           label: 'Label'
         }),
-        dh.defineKnFormRadioSelectField('select', {
+        kn.radioSelect('select', {
           label: 'Selection',
           returnObject: true,
           rules: [
@@ -149,7 +149,7 @@ const formLayout = dh.defineKnForm({
             }
           ]
         }),
-        dh.defineKnFormLazySelectField('lazy', {
+        kn.lazySelect('lazy', {
           label: 'Lazy selection',
           resourceService: testResourceService
         })
@@ -161,7 +161,7 @@ const formLayout = dh.defineKnForm({
 const $q = useQuasar()
 
 function showDialog() {
-  dh.defineKnFormDialog({
+  kn.dialog({
     formData: formLayout,
     initialValue: testData.value,
     title: 'Test dialog form lorem ipsum asjkh hsjhas jhas'

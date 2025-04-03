@@ -1,4 +1,4 @@
-import dh from './helpers/defineHelpers.ts'
+import kn from './helpers/defineHelpers.ts'
 import KnFormLayout from './components/KnFormLayout.vue'
 import KnFormDialog from './components/KnFormDialog.vue'
 import type { KnFormLayoutExpose } from './components/KnFormLayout.vue'
@@ -26,5 +26,5 @@ export {
   Pass,
   Consts,
   RULES,
-  dh, fields, service, types, jsUtils
+  kn, fields, service, types, jsUtils
 }

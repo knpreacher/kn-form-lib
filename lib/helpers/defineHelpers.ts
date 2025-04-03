@@ -90,15 +90,15 @@ function defineKnFormDialog(options: KnFormDialogProps, $q?: QVueGlobals): Dialo
 }
 
 export default {
-  defineKnFormLabelField,
-  defineKnFormStringField,
-  defineKnFormIntField,
-  defineKnFormFloatField,
-  defineKnFormSelectField,
-  defineKnFormRadioSelectField,
-  defineKnFormLazySelectField,
-  defineKnFormInnerFormField,
+  label: defineKnFormLabelField,
+  string: defineKnFormStringField,
+  int: defineKnFormIntField,
+  float: defineKnFormFloatField,
+  select: defineKnFormSelectField,
+  radioSelect: defineKnFormRadioSelectField,
+  lazySelect: defineKnFormLazySelectField,
+  innerForm: defineKnFormInnerFormField,
 
-  defineKnFormDialog,
-  defineKnForm
+  dialog: defineKnFormDialog,
+  form: defineKnForm
 }

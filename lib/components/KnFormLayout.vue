@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { KnFormLayoutData, KnFormModelData, PreparedQuasarFormButton, ScreenBreakpoint } from '../types.ts'
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
-import { computed, inject, useTemplateRef } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { QForm, QBtn, QSpace, type QFormChildComponent } from 'quasar'
 import { getGroupProps } from '../utils/formUtils.ts'
 import KnFormInputGroup from './KnFormInputGroup.vue'
@@ -39,7 +39,7 @@ const groups = computed(
   () => props.groups.map(g => getGroupProps(g, props.groupDefaults))
 )
 
-const formRef = useTemplateRef<QForm>('formRef')
+const formRef = ref<QForm | null>(null)
 
 function exposedSubmit() {
   formRef.value?.submit()
@@ -79,7 +79,7 @@ function getValidationComponents() {
 
 const actionButtonsGutterSizeClass = computed(
   () => props.actionButtonsGutterSize ?
-    `q-gutter-${props.actionButtonsGutterSize}` :
+    `q-gutter-${props.actionButtonsGutterSize} q-pt-${props.actionButtonsGutterSize}` :
     undefined
 )
 
@@ -90,8 +90,8 @@ defineExpose<KnFormLayoutExpose>({
 })
 
 defineSlots<{
-  before: () => any
-  after: () => any
+  before: (props: {}) => void
+  after: (props: {}) => any
   buttons: (
     props: {
       gutter?: ScreenBreakpoint,
