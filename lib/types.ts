@@ -54,6 +54,7 @@ export declare type KnFormDataType =
   | 'float'
   | 'bool'
   | 'bool_switch'
+  | 'text_lines'
   | 'select'
   | 'radio_select'
   | 'select_lazy'
@@ -157,6 +158,21 @@ export declare type KnFormFloatInputFieldProps = KnFormInputProps<
   number
 >
 /**
+ * Text lines input field
+ */
+export declare type SplitTextOption = '\r\n' | '\n' | string
+export declare type KnFormTextLinesInputField = KnFormAbstractField<
+  'text_lines',
+  PreparedQuasarFieldProps<QInputProps>
+> & FieldHasCustomValidationProps & {
+  splitBy?: SplitTextOption,
+  spaceSize?: ScreenBreakpoint
+}
+export declare type KnFormTextLinesInputFieldProps = KnFormInputProps<
+  KnFormTextLinesInputField,
+  string|undefined
+>
+/**
  * Select input field
  */
 export declare type KnFormSelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
@@ -241,6 +257,7 @@ export declare type KnFormAnyField =
   | KnFormStringInputField
   | KnFormIntInputField
   | KnFormFloatInputField
+  | KnFormTextLinesInputField
   | KnFormSelectInputField
   | KnFormRadioSelectInputField
   | KnFormLazySelectInputField
@@ -250,6 +267,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormStringInputFieldProps
   | KnFormIntInputFieldProps
   | KnFormFloatInputFieldProps
+  | KnFormTextLinesInputFieldProps
   | KnFormSelectInputFieldProps
   | KnFormRadioSelectInputFieldProps
   | KnFormLazySelectInputFieldProps

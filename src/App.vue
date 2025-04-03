@@ -83,7 +83,8 @@ const formLayout = kn.form({
         sm: 12,
         md: 6,
         lg: 4,
-        xl: 3
+        xl: 3,
+        fit: true
       },
       inputProps: {
         dense: true,
@@ -99,6 +100,11 @@ const formLayout = kn.form({
           wrapToggle: true,
           // showIf: (allData) => allData.age > 10,
           label: 'Name'
+        }),
+        kn.textLines('lines', {
+          // showIf: (allData) => allData.age > 10,
+          label: 'Lines',
+          spaceSize: 'xs'
         }),
         kn.innerForm('inner', {
           label: 'Inner',

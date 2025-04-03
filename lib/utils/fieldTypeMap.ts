@@ -5,6 +5,7 @@ export const TYPE_COMPONENT_MAP: Partial<Record<KnFormDataType, any>> = Object.f
   str: fields.KnFormStringInputField,
   int: fields.KnFormIntInputField,
   float: fields.KnFormFloatInputField,
+  text_lines: fields.KnFormTextLinesInputField,
   label: fields.KnFormLabelInputField,
   select: fields.KnFormSelectInputField,
   radio_select: fields.KnFormRadioSelectInputField,
