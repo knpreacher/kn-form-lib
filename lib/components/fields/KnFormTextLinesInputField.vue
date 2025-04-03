@@ -47,10 +47,12 @@ const model = ref<InputType>(getModelValue(nativeModel.value))
 watch(model, (value) => {
   if (isEmpty(value)) {
     nativeModel.value = undefined
+    return
   }
   const _tmp = value.filter(s => !isEmpty(s))
   if (isEmpty(_tmp)) {
     nativeModel.value = undefined
+    return
   }
   nativeModel.value = _tmp.join(separator)
 }, { deep: true })

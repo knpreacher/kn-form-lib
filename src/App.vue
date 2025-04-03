@@ -102,7 +102,10 @@ const formLayout = kn.form({
           label: 'Name'
         }),
         kn.textLines('lines', {
-          // showIf: (allData) => allData.age > 10,
+          showIf: (allData) => {
+            console.log('show call', allData)
+            return allData.age > 10
+          },
           label: 'Lines',
           spaceSize: 'xs'
         }),
