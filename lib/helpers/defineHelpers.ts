@@ -9,7 +9,7 @@ import type {
   KnSelectDefaultOptionType,
   KnFormLazySelectInputField,
   KnFormRadioSelectInputField,
-  KnFormInnerFormInputField, KnFormDialogProps, KnFormTextLinesInputField
+  KnFormInnerFormInputField, KnFormDialogProps, KnFormTextLinesInputField, KnFormComputedInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 import type { DialogChainObject, QVueGlobals } from 'quasar'
@@ -23,6 +23,13 @@ function defineKnFormLabelField(
   options: Omit<KnFormLabelInputField, 'dataType' | 'dataKey'>
 ): KnFormLabelInputField {
   return Object.assign(options, { dataKey, dataType: 'label' } as DTAppend) as KnFormLabelInputField
+}
+
+function defineKnFormComputedField(
+  dataKey: string,
+  options: Omit<KnFormComputedInputField, 'dataType' | 'dataKey'>
+): KnFormComputedInputField {
+  return Object.assign(options, { dataKey, dataType: 'computed' } as DTAppend) as KnFormComputedInputField
 }
 
 function defineKnFormStringField(
@@ -98,6 +105,7 @@ function defineKnFormDialog(options: KnFormDialogProps, $q?: QVueGlobals): Dialo
 
 export default {
   label: defineKnFormLabelField,
+  computed: defineKnFormComputedField,
   string: defineKnFormStringField,
   int: defineKnFormIntField,
   float: defineKnFormFloatField,

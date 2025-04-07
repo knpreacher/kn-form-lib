@@ -44,9 +44,11 @@ const fields = computed(
 const { errorMessage } = useKnCustomField(props, model)
 
 const gutterClass = computed(() => props.fieldGutter ? `q-pb-${props.fieldGutter}` : '')
+const offsetStyle = computed(() => ({'margin-left': `${props.offset}px`}))
 </script>
 <template>
-  <div class="kn-form-inner-form-input">
+  <div class="kn-form-inner-form-input" :style="offsetStyle">
+    <div>{{offsetStyle}}</div>
     <div class="kn-form-inner-form-input__label" v-text="label"></div>
     <div v-if="innerModel">
       <kn-form-input-field-wrapper

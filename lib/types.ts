@@ -1,6 +1,6 @@
 import type {
   QBtnProps, QDialogProps,
-  QField,
+  QField, QFieldProps,
   QIconProps,
   QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QScrollAreaProps, QSelectProps,
   QToggleProps,
@@ -49,6 +49,7 @@ export declare type DomExtraProps = Partial<{
 
 export declare type KnFormDataType =
   | 'label'
+  | 'computed'
   | 'str'
   | 'int'
   | 'float'
@@ -88,6 +89,7 @@ export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', 
    * The label of the field (required) (will be passed to the input component as label prop)
    */
   label?: string
+  useOutLabel?: boolean
   gridSize?: GridSizeProps
   wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
   untoggledValue?: any
@@ -96,7 +98,7 @@ export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', 
 
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
-  inputProps?: InputPropsType
+  inputProps?: InputPropsType,
 }
 
 export declare type KnSelectDefaultOptionType = {
@@ -112,7 +114,9 @@ export declare type SharedKnFormFieldData<Field = KnFormAbstractField> = Omit<Fi
 export declare type KnFormInputProps<
   Field = KnFormAbstractField,
   JsDataType = unknown
-> = SharedKnFormFieldData<Field> & VModelProps<JsDataType>
+> = SharedKnFormFieldData<Field> & VModelProps<JsDataType> & {
+  allData?: Record<string, any>
+}
 
 export declare type PreparedQuasarFieldProps<T extends { label?: string, modelValue?: any }> =
   Omit<T, 'label' | 'modelValue'>
@@ -123,6 +127,19 @@ export declare type KnFormLabelInputField = KnFormAbstractField<'label', {}>
 export declare type KnFormLabelInputFieldProps = KnFormInputProps<
   KnFormLabelInputField,
   string
+>
+/**
+ * Computed input field
+ */
+export declare type KnFormComputedInputField = KnFormAbstractField<
+  'computed',
+  PreparedQuasarFieldProps<QFieldProps>
+> & {
+  getter: (allData: Record<string, any>|undefined) => any
+}
+export declare type KnFormComputedInputFieldProps = KnFormInputProps<
+  KnFormComputedInputField,
+  any
 >
 /**
  * String input field
@@ -242,7 +259,8 @@ export declare type KnFormInnerFormInputField = KnFormAbstractField<
   {}
 > & FieldHasCustomValidationProps & {
   fieldGutter?: ScreenBreakpoint
-  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
+  offset?: number
+  fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>
   fields: KnFormAnyField[]
 }
 export declare type KnFormInnerFormInputFieldProps = KnFormInputProps<
@@ -254,6 +272,7 @@ export declare type KnFormInnerFormInputFieldProps = KnFormInputProps<
  */
 export declare type KnFormAnyField =
   | KnFormLabelInputField
+  | KnFormComputedInputField
   | KnFormStringInputField
   | KnFormIntInputField
   | KnFormFloatInputField
@@ -264,6 +283,7 @@ export declare type KnFormAnyField =
   | KnFormInnerFormInputField
 export declare type KnFormAnyFieldProps =
   | KnFormLabelInputFieldProps
+  | KnFormComputedInputFieldProps
   | KnFormStringInputFieldProps
   | KnFormIntInputFieldProps
   | KnFormFloatInputFieldProps

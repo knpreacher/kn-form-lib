@@ -78,6 +78,7 @@ const formLayout = kn.form({
     expanded: true,
     gutterSize: 'md',
     fieldDefaults: {
+      useOutLabel: true,
       gridSize: {
         xs: 12,
         sm: 12,
@@ -101,6 +102,9 @@ const formLayout = kn.form({
           // showIf: (allData) => allData.age > 10,
           label: 'Name'
         }),
+        kn.computed('name_upper', {
+          getter: (allData) => allData.name.toUpperCase(),
+        }),
         kn.textLines('lines', {
           showIf: (allData) => {
             console.log('show call', allData)
@@ -112,6 +116,7 @@ const formLayout = kn.form({
         kn.innerForm('inner', {
           label: 'Inner',
           fieldGutter: 'md',
+          offset: 40,
           fields: [
             kn.string('name', {
               label: 'Inner Name'
