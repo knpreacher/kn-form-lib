@@ -7,19 +7,21 @@ import {
 } from '../utils/useVModel.ts'
 import type { KnFormAnyFieldProps, SharedKnFormFieldData } from '../types.ts'
 import type { QToggleProps } from 'quasar'
-import { QToggle } from 'quasar'
+import { QToggle, QSpace } from 'quasar'
 import { computed, ref, watch } from 'vue'
 import KnFormUnknownInputField from '../components/fields/KnFormUnknownInputField.vue'
 import { TYPE_COMPONENT_MAP } from '../utils/fieldTypeMap.ts'
 import { getGridClass } from '../utils/formUtils.ts'
 import { isEmpty } from '../utils/jsUtils'
+import SlotRenderer from './helpers/SlotRenderer.vue';
 
 defineOptions({
   name: 'KnFormInputFieldWrapper'
 })
 
 const props = defineProps<{
-  fieldProps: Omit<FieldProps, 'modelValue'>,
+  // fieldProps: Omit<FieldProps, 'modelValue'>,
+  fieldProps: FieldProps,
   fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
 } & VModelProps<ValueType>>()
 const emit = defineEmits<VModelEmitter<ValueType>>()
@@ -55,16 +57,10 @@ const componentToBeMount: any = TYPE_COMPONENT_MAP[fieldProps.dataType] ?? KnFor
 
 const columnClass = getGridClass(fieldProps.gridSize)
 
-const bindLabel = computed(()=>props.fieldProps.useOutLabel ? undefined : props.fieldProps.label)
+const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : props.fieldProps.label)
 </script>
 <template>
   <div class="kn-form-input-field-wrapper" :class="columnClass">
-    <div class="kn-form-input-field-wrapper__header">
-      <div class="kn-form-input-field-wrapper__label"
-           v-if="fieldProps?.useOutLabel"
-           v-text="fieldProps.label"
-      ></div>
-    </div>
     <div v-if="useToggle">
       <q-toggle v-model="toggled" v-bind="toggleProps"/>
       <component
@@ -75,12 +71,36 @@ const bindLabel = computed(()=>props.fieldProps.useOutLabel ? undefined : props.
         :is="componentToBeMount" v-model="model"
       />
     </div>
-    <component
-      v-else v-bind="fieldProps as {}"
-      :label="bindLabel"
-      :field-defaults="fieldDefaults"
-      :all-data="allData"
-      :is="componentToBeMount" v-model="model"
-    />
+    <template v-else>
+      <div class="kn-form-input-field-wrapper__header">
+        <slot-renderer :slot-data="fieldProps.slots?.outLabelPrepend"/>
+        <slot-renderer :slot-data="fieldProps.slots?.outLabel">
+          <div class="kn-form-input-field-wrapper__label"
+               v-if="(fieldProps as any)?.useOutLabel"
+               v-text="(fieldProps as any).label"
+          ></div>
+        </slot-renderer>
+        <slot-renderer :slot-data="fieldProps.slots?.outLabelAppend"/>
+        <q-space />
+        <slot-renderer :slot-data="fieldProps.slots?.outLabelAppendSide"/>
+      </div>
+      <component
+        v-bind="fieldProps as {}"
+        :label="bindLabel"
+        :field-defaults="fieldDefaults"
+        :all-data="allData"
+        :is="componentToBeMount" v-model="model"
+      />
+    </template>
   </div>
 </template>
+
+<style scoped>
+.kn-form-input-field-wrapper__header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+</style>

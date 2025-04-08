@@ -6,7 +6,7 @@ import type {
 } from '../../types'
 
 defineOptions({
-  name: 'KnFormLabelInputField'
+  name: 'KnFormComputedInputField'
 })
 
 const props = defineProps<KnFormComputedInputFieldProps>()

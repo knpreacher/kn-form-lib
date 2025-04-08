@@ -75,7 +75,24 @@ export type KnFormModelData = Record<string, any>
 
 export declare type FieldShowConditionFunction<T extends KnFormModelData = KnFormModelData> = (allData: T) => boolean
 
-export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', InputPropsType = Record<string, any>> {
+export interface KnFieldSlotData {
+  text?: string
+  icon?: QIconProps | string
+  html?: string
+  component?: any,
+  componentProps?: any
+}
+
+type DefaultCommonSlotNames =
+  'outLabel' | 'outLabelText' | 'outLabelAppend' | 'outLabelPrepend' | 'outLabelAppendSide' |
+  'label' | 'prepend' | 'prependInner' | 'append' | 'appendInner' | 'header' | 'footer'
+
+export interface KnFormAbstractField<
+  DataType extends KnFormDataType = 'label',
+  InputPropsType = Record<string, any>,
+  SlotNames extends string = DefaultCommonSlotNames,
+  // SlotsType = Record<string, KnFieldSlotData>
+> {
   /**
    * The key of the field (required)
    */
@@ -99,6 +116,7 @@ export interface KnFormAbstractField<DataType extends KnFormDataType = 'label', 
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
   inputProps?: InputPropsType,
+  slots?: Partial<Record<SlotNames, KnFieldSlotData>> | string
 }
 
 export declare type KnSelectDefaultOptionType = {
@@ -135,7 +153,7 @@ export declare type KnFormComputedInputField = KnFormAbstractField<
   'computed',
   PreparedQuasarFieldProps<QFieldProps>
 > & {
-  getter: (allData: Record<string, any>|undefined) => any
+  getter: (allData: Record<string, any> | undefined) => any
 }
 export declare type KnFormComputedInputFieldProps = KnFormInputProps<
   KnFormComputedInputField,
@@ -187,7 +205,7 @@ export declare type KnFormTextLinesInputField = KnFormAbstractField<
 }
 export declare type KnFormTextLinesInputFieldProps = KnFormInputProps<
   KnFormTextLinesInputField,
-  string|undefined
+  string | undefined
 >
 /**
  * Select input field

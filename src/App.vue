@@ -127,7 +127,12 @@ const formLayout = kn.form({
           ]
         }),
         kn.int('age', {
-          label: 'Age'
+          label: 'Age',
+          slots: {
+            outLabelPrepend: {
+              icon: 'person',
+            }
+          }
           // inputProps: {
           //   rules: [
           //     rules.required()
