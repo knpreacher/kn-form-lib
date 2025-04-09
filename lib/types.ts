@@ -83,6 +83,14 @@ export interface KnFieldSlotData {
   componentProps?: any
 }
 
+export interface KnFieldSlotDataObject {
+  text?: string
+  icon?: QIconProps
+  html?: string
+  component?: any,
+  componentProps?: any
+}
+
 type DefaultCommonSlotNames =
   'outLabel' | 'outLabelText' | 'outLabelAppend' | 'outLabelPrepend' | 'outLabelAppendSide' |
   'label' | 'prepend' | 'prependInner' | 'append' | 'appendInner' | 'header' | 'footer'

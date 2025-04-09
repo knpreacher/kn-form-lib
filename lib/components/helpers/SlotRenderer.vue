@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { KnFieldSlotData } from '../../types';
+import type { KnFieldSlotData, KnFieldSlotDataObject } from '../../types';
 import {QIcon} from 'quasar';
 import { computed } from 'vue';
 
@@ -7,7 +7,7 @@ const props = defineProps<{
   slotData?: KnFieldSlotData | string
 }>()
 
-const slotData = computed<KnFieldSlotData | undefined>(() => {
+const slotData = computed<KnFieldSlotDataObject | undefined>(() => {
   if (typeof props.slotData === 'string') {
     return {
       text: props.slotData
@@ -20,7 +20,7 @@ const slotData = computed<KnFieldSlotData | undefined>(() => {
       }
     }
   }
-  return props.slotData
+  return props.slotData as KnFieldSlotDataObject
 })
 </script>
 
