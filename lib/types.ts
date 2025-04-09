@@ -116,7 +116,7 @@ export interface KnFormAbstractField<
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
   inputProps?: InputPropsType,
-  slots?: Partial<Record<SlotNames, KnFieldSlotData>> | string
+  slots?: Partial<Record<SlotNames, KnFieldSlotData | string>>
 }
 
 export declare type KnSelectDefaultOptionType = {

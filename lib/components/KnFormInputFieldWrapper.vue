@@ -76,8 +76,8 @@ const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : prop
         <slot-renderer :slot-data="fieldProps.slots?.outLabelPrepend"/>
         <slot-renderer :slot-data="fieldProps.slots?.outLabel">
           <div class="kn-form-input-field-wrapper__label"
-               v-if="(fieldProps as any)?.useOutLabel"
-               v-text="(fieldProps as any).label"
+               v-if="fieldProps?.useOutLabel"
+               v-text="fieldProps.label"
           ></div>
         </slot-renderer>
         <slot-renderer :slot-data="fieldProps.slots?.outLabelAppend"/>
@@ -85,7 +85,7 @@ const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : prop
         <slot-renderer :slot-data="fieldProps.slots?.outLabelAppendSide"/>
       </div>
       <component
-        v-bind="fieldProps as {}"
+        v-bind="fieldProps"
         :label="bindLabel"
         :field-defaults="fieldDefaults"
         :all-data="allData"
