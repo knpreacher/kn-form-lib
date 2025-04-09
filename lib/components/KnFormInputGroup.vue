@@ -46,7 +46,7 @@ const getGutterClasses: () => VueClassObjectProp = () => {
 
 const fieldRowClasses: VueClassObjectProp = {
   ...(props.headerPadding ? {
-    [`q-col-padding-${props.headerPadding}`]: true
+    [`q-mt-${props.headerPadding}`]: true
   } : {}),
   ...getGutterClasses()
 }
@@ -58,7 +58,7 @@ const fieldRowClasses: VueClassObjectProp = {
     :icon="iconProps?.name"
     v-model="expanded"
   >
-    <div class="row fit" :class="fieldRowClasses">
+    <div class="row" :class="fieldRowClasses">
       <kn-form-input-field-wrapper
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
@@ -73,7 +73,7 @@ const fieldRowClasses: VueClassObjectProp = {
       <q-icon v-if="props.iconProps" v-bind="props.iconProps" />
       <div v-if="label" class="kn-form-input-group__label" v-html="label"></div>
     </div>
-    <div class="row fit" :class="fieldRowClasses">
+    <div class="row" :class="fieldRowClasses">
       <kn-form-input-field-wrapper
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
