@@ -3,6 +3,7 @@ import KnFormComputedInputField from './KnFormComputedInputField.vue'
 import KnFormStringInputField from './KnFormStringInputField.vue'
 import KnFormIntInputField from './KnFormIntInputField.vue'
 import KnFormFloatInputField from './KnFormFloatInputField.vue'
+import KnFormToggleBoolInputField from './KnFormToggleBoolInputField.vue'
 import KnFormTextLinesInputField from './KnFormTextLinesInputField.vue'
 import KnFormSelectInputField from './KnFormSelectInputField.vue'
 import KnFormToggleSelectInputField from './KnFormToggleSelectInputField.vue'
@@ -17,6 +18,7 @@ export {
   KnFormStringInputField,
   KnFormIntInputField,
   KnFormFloatInputField,
+  KnFormToggleBoolInputField,
   KnFormTextLinesInputField,
   KnFormSelectInputField,
   KnFormToggleSelectInputField,

@@ -13,7 +13,7 @@ import type {
   KnFormDialogProps,
   KnFormTextLinesInputField,
   KnFormComputedInputField,
-  KnFormToggleSelectInputField
+  KnFormToggleSelectInputField, KnFormToggleBoolInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 import type { DialogChainObject, QVueGlobals } from 'quasar'
@@ -55,6 +55,13 @@ function defineKnFormFloatField(
   options: Omit<KnFormFloatInputField, 'dataType' | 'dataKey'>
 ): KnFormFloatInputField {
   return Object.assign(options, { dataKey, dataType: 'float' } as DTAppend) as KnFormFloatInputField
+}
+
+function defineKnFormToggleBoolField(
+  dataKey: string,
+  options: Omit<KnFormToggleBoolInputField, 'dataType' | 'dataKey'>
+): KnFormToggleBoolInputField {
+  return Object.assign(options, { dataKey, dataType: 'bool_toggle' } as DTAppend) as KnFormToggleBoolInputField
 }
 
 function defineKnFormTextLinesField(
@@ -120,6 +127,7 @@ export default {
   string: defineKnFormStringField,
   int: defineKnFormIntField,
   float: defineKnFormFloatField,
+  toggleBool: defineKnFormToggleBoolField,
   textLines: defineKnFormTextLinesField,
   select: defineKnFormSelectField,
   toggleSelect: defineKnFormToggleSelectField,

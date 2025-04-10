@@ -153,6 +153,10 @@ const formLayout = kn.form({
         kn.float('weight', {
           label: 'Weight'
         }),
+        kn.toggleBool('is_ready', {
+          label: 'isReady',
+          emptyAsFalse: true
+        }),
         kn.label('label', {
           label: 'Label'
         }),

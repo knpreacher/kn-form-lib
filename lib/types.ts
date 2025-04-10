@@ -55,6 +55,7 @@ export declare type KnFormDataType =
   | 'float'
   | 'bool'
   | 'bool_switch'
+  | 'bool_toggle'
   | 'text_lines'
   | 'select'
   | 'radio_select'
@@ -229,6 +230,22 @@ export declare type KnFormFloatInputFieldProps = KnFormInputProps<
   number
 >
 /**
+ * Toggle bool input field
+ */
+export declare type KnFormToggleBoolInputField = KnFormAbstractField<
+  'bool_toggle',
+  PreparedQuasarFieldProps<Omit<QBtnToggleProps, 'options'>>
+> & {
+  clearable?: boolean
+  trueData?: Omit<KnSelectDefaultOptionType, 'value'>
+  falseData?: Omit<KnSelectDefaultOptionType, 'value'>
+  emptyAsFalse?: boolean
+}
+export declare type KnFormToggleBoolInputFieldProps = KnFormInputProps<
+  KnFormToggleBoolInputField,
+  boolean
+>
+/**
  * Text lines input field
  */
 export declare type SplitTextOption = '\r\n' | '\n' | string
@@ -349,6 +366,7 @@ export declare type KnFormAnyField =
   | KnFormStringInputField
   | KnFormIntInputField
   | KnFormFloatInputField
+  | KnFormToggleBoolInputField
   | KnFormTextLinesInputField
   | KnFormSelectInputField
   | KnFormToggleSelectInputField
@@ -361,6 +379,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormStringInputFieldProps
   | KnFormIntInputFieldProps
   | KnFormFloatInputFieldProps
+  | KnFormToggleBoolInputFieldProps
   | KnFormTextLinesInputFieldProps
   | KnFormSelectInputFieldProps
   | KnFormToggleSelectInputFieldProps
