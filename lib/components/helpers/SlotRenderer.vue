@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import type { KnFieldSlotData, KnFieldSlotDataObject } from '../../types';
-import {QIcon} from 'quasar';
-import { computed } from 'vue';
+import type { KnFieldSlotData, KnFieldSlotDataObject } from '../../types'
+import { QIcon } from 'quasar'
+import { computed } from 'vue'
 
 const props = defineProps<{
   slotData?: KnFieldSlotData | string
 }>()
+
+const model = defineModel<any | undefined>()
+const allData = defineModel<Record<string, any> | undefined>('allData')
 
 const slotData = computed<KnFieldSlotDataObject | undefined>(() => {
   if (typeof props.slotData === 'string') {
@@ -20,16 +23,36 @@ const slotData = computed<KnFieldSlotDataObject | undefined>(() => {
       }
     }
   }
+  if (props.slotData?.computedString) {
+    const result = props.slotData.computedString({
+      value: model.value,
+      allData: allData.value
+    })
+    if (result.html) {
+      return {
+        html: result.content
+      }
+    } else {
+      return {
+        text: result.content
+      }
+    }
+  }
   return props.slotData as KnFieldSlotDataObject
 })
 </script>
 
 <template>
   <slot v-if="!slotData"></slot>
-  <q-icon v-else-if="slotData.icon" v-bind="slotData.icon"/>
-  <span v-else-if="slotData.text" v-text="slotData.text"></span>
-  <div v-else-if="slotData.html" v-html="slotData.html"></div>
-  <component v-else-if="slotData.component" :is="slotData.component" v-bind="slotData.componentProps"></component>
+  <q-icon v-else-if="slotData.icon" v-bind="slotData.icon" :class="slotData.cls" />
+  <div v-else-if="slotData.text" v-text="slotData.text" :class="slotData.cls"></div>
+  <div v-else-if="slotData.html" v-html="slotData.html" :class="slotData.cls"></div>
+  <component
+    v-else-if="slotData.component"
+    :is="slotData.component"
+    v-bind="slotData.componentProps"
+    :class="slotData.cls"
+  />
 </template>
 
 <style scoped>

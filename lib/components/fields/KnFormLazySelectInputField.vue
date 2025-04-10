@@ -9,6 +9,8 @@ import { useKnFormField } from '../../helpers/useHelpers.ts'
 import { computed, inject, ref } from 'vue'
 import LazyListView from './../extensions/LazyListView.vue'
 import { Consts } from '../../consts.ts'
+import { useQuasarKnSlots } from '../../utils/quasarSlotUtils.ts'
+import SlotRenderer from 'lib/components/helpers/SlotRenderer.vue'
 
 defineOptions({
   name: 'KnFormLazySelectInputField'
@@ -32,7 +34,7 @@ const props = withDefaults(defineProps<KnFormLazySelectInputFieldProps<ValueType
 const emit = defineEmits<VModelEmitter<ValueType>>()
 
 const { model } = useKnFormField(props, emit)
-
+const { usedSlots } = useQuasarKnSlots(props)
 const loading = ref(false)
 
 const popupOpened = ref(false)
@@ -64,6 +66,10 @@ const popupCardStyle = computed<VueStyleObjectProp>(()=>({
       <template #control="{modelValue}: QFieldControlSlotScope">
         <span v-text="itemToString(modelValue)"></span>
       </template>
+      <template v-for="[quasarSlot, knSlot] in usedSlots" #[quasarSlot]>
+        <slot-renderer :slot-data="slots?.[knSlot]" />
+      </template>
+
       <q-popup-proxy
         v-bind="popupProxyProps"
         v-model="popupOpened"

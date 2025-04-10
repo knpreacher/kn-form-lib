@@ -1,5 +1,5 @@
 import type {
-  QBtnProps, QDialogProps,
+  QBtnProps, QBtnToggleProps, QDialogProps,
   QField, QFieldProps,
   QIconProps,
   QInputProps, QItemProps, QOptionGroupProps, QPopupProxyProps, QScrollAreaProps, QSelectProps,
@@ -58,6 +58,7 @@ export declare type KnFormDataType =
   | 'text_lines'
   | 'select'
   | 'radio_select'
+  | 'toggle_select'
   | 'select_lazy'
   | 'inner_form'
 
@@ -75,26 +76,44 @@ export type KnFormModelData = Record<string, any>
 
 export declare type FieldShowConditionFunction<T extends KnFormModelData = KnFormModelData> = (allData: T) => boolean
 
+export interface KnFormComputedStringFunctionOptions {
+  value: any,
+  // emitValue: (value: any) => void,
+  allData: any,
+  // emitAllData: (data: any) => void
+}
+
+export type KnFormComputedStringFunction = (options: KnFormComputedStringFunctionOptions) => {
+  content?: string,
+  html?: true
+}
+
 export interface KnFieldSlotData {
   text?: string
   icon?: QIconProps | string
   html?: string
-  component?: any,
+  component?: any
   componentProps?: any
+  cls?: VueClassProp
+  computedString?: KnFormComputedStringFunction
 }
 
 export interface KnFieldSlotDataObject {
   text?: string
   icon?: QIconProps
   html?: string
-  component?: any,
+  component?: any
   componentProps?: any
+  cls?: VueClassProp
 }
 
 type DefaultCommonSlotNames =
   'outLabel' | 'outLabelText' | 'outLabelAppend' | 'outLabelPrepend' | 'outLabelAppendSide' |
   'label' | 'prepend' | 'prependInner' | 'append' | 'appendInner' | 'header' | 'footer'
 
+export type ExtractSlotNames<T extends Pick<KnFormAbstractField, 'slots'>> = keyof (Required<Required<Pick<T, 'slots'>>>['slots'])
+
+export type KnFieldSlots<SlotNames extends string = DefaultCommonSlotNames> = Partial<Record<SlotNames, KnFieldSlotData | string>>
 export interface KnFormAbstractField<
   DataType extends KnFormDataType = 'label',
   InputPropsType = Record<string, any>,
@@ -115,6 +134,7 @@ export interface KnFormAbstractField<
    */
   label?: string
   useOutLabel?: boolean
+  inlineOutLabel?: VueClassProp | boolean
   gridSize?: GridSizeProps
   wrapToggle?: true | Omit<QToggleProps, 'modelValue'>
   untoggledValue?: any
@@ -124,7 +144,7 @@ export interface KnFormAbstractField<
   showIf?: FieldShowConditionFunction<Record<string, any>>
 
   inputProps?: InputPropsType,
-  slots?: Partial<Record<SlotNames, KnFieldSlotData | string>>
+  slots?: KnFieldSlots<SlotNames>
 }
 
 export declare type KnSelectDefaultOptionType = {
@@ -178,13 +198,21 @@ export declare type KnFormStringInputFieldProps = KnFormInputProps<
   KnFormStringInputField,
   string
 >
+
+export declare interface NumberSpinControlMixin {
+  min?: number
+  max?: number
+  step?: number
+  showSpinButtons?: boolean
+}
+
 /**
  * Int input field
  */
 export declare type KnFormIntInputField = KnFormAbstractField<
   'int',
   PreparedQuasarFieldProps<QInputProps>
->
+> & NumberSpinControlMixin
 export declare type KnFormIntInputFieldProps = KnFormInputProps<
   KnFormIntInputField,
   number
@@ -195,7 +223,7 @@ export declare type KnFormIntInputFieldProps = KnFormInputProps<
 export declare type KnFormFloatInputField = KnFormAbstractField<
   'float',
   PreparedQuasarFieldProps<QInputProps>
->
+> & NumberSpinControlMixin
 export declare type KnFormFloatInputFieldProps = KnFormInputProps<
   KnFormFloatInputField,
   number
@@ -254,6 +282,25 @@ export declare type KnFormRadioSelectInputFieldProps<
   ValueType
 >
 /**
+ * Toggle select input field
+ */
+export declare type KnFormToggleSelectInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
+  KnFormAbstractField<
+    'toggle_select',
+    PreparedQuasarFieldProps<Omit<QBtnToggleProps, 'options'>>
+  >
+  & FieldHasCustomValidationProps & {
+  options: OptionType[],
+  clearable?: boolean,
+}
+export declare type KnFormToggleSelectInputFieldProps<
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  ValueType = any
+> = KnFormInputProps<
+  KnFormToggleSelectInputField<OptionType>,
+  ValueType
+>
+/**
  * Lazy select input field
  */
 export declare type KnFormLazySelectInputField<
@@ -304,6 +351,7 @@ export declare type KnFormAnyField =
   | KnFormFloatInputField
   | KnFormTextLinesInputField
   | KnFormSelectInputField
+  | KnFormToggleSelectInputField
   | KnFormRadioSelectInputField
   | KnFormLazySelectInputField
   | KnFormInnerFormInputField
@@ -315,6 +363,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormFloatInputFieldProps
   | KnFormTextLinesInputFieldProps
   | KnFormSelectInputFieldProps
+  | KnFormToggleSelectInputFieldProps
   | KnFormRadioSelectInputFieldProps
   | KnFormLazySelectInputFieldProps
   | KnFormInnerFormInputFieldProps

@@ -103,6 +103,14 @@ const formLayout = kn.form({
           label: 'Name'
         }),
         kn.computed('name_upper', {
+          slots: {
+            outLabelAppendSide: {
+              text: '123',
+              cls: 'text-red'
+            },
+            appendInner: '!!!lol',
+            prependInner: '!!!lol',
+          },
           getter: (allData) => allData.name.toUpperCase(),
         }),
         kn.textLines('lines', {
@@ -131,6 +139,9 @@ const formLayout = kn.form({
           slots: {
             outLabelPrepend: {
               icon: 'person',
+            },
+            footer: {
+              computedString: ({ value })=> ({content: value > 18 ? 'Adult' : `Age: ${value} is not adult`})
             }
           }
           // inputProps: {
@@ -155,6 +166,27 @@ const formLayout = kn.form({
             {
               value: 'kek',
               disable: true,
+              leftIcon: {
+                name: 'close'
+              }
+            },
+            {
+              value: 'lol',
+              leftIcon: {
+                name: 'star',
+                color: 'primary'
+              }
+            }
+          ]
+        }),
+        kn.toggleSelect('select', {
+          label: 'Selection toggle',
+          clearable: true,
+          useOutLabel: true,
+          inlineOutLabel: true,
+          options: [
+            {
+              value: 'kek',
               leftIcon: {
                 name: 'close'
               }

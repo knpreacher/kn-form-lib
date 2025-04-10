@@ -4,6 +4,8 @@ import type { KnFormSelectInputFieldProps, KnSelectDefaultOptionType } from '../
 import { type VModelEmitter } from '../../utils/useVModel'
 import { type QItemProps, QSelect, QItem, QItemSection, QItemLabel, QIcon } from 'quasar'
 import { useKnFormField } from '../../helpers/useHelpers.ts'
+import SlotRenderer from '../helpers/SlotRenderer.vue'
+import { useQuasarKnSlots } from '../../utils/quasarSlotUtils.ts'
 
 interface OptionSlotScope {
   index: number,
@@ -19,6 +21,7 @@ const props = withDefaults(defineProps<KnFormSelectInputFieldProps<OptionType, V
 const emit = defineEmits<VModelEmitter<ValueType>>()
 
 const { model } = useKnFormField(props, emit)
+const { usedSlots } = useQuasarKnSlots(props)
 
 const displayOptionText = (o: OptionType): string => {
   if (o.label) {
@@ -38,6 +41,9 @@ const displayOptionText = (o: OptionType): string => {
             :map-options="returnObject"
             :emit-value="!returnObject"
   >
+    <template v-for="[quasarSlot, knSlot] in usedSlots" #[quasarSlot]>
+      <slot-renderer :slot-data="slots?.[knSlot]" />
+    </template>
     <template #option="{opt, itemProps}: OptionSlotScope">
       <q-item v-bind="itemProps">
         <q-item-section avatar v-if="opt.leftIcon">

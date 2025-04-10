@@ -11,6 +11,8 @@ import { RULES } from './validation/rules.ts'
 import LazyListView from './components/extensions/LazyListView.vue'
 import Pass from './components/helpers/Pass.vue'
 
+import './index.css'
+
 import { Consts } from './consts.ts'
 
 import * as types from './types.ts'

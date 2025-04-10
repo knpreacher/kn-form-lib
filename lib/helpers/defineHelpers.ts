@@ -9,7 +9,11 @@ import type {
   KnSelectDefaultOptionType,
   KnFormLazySelectInputField,
   KnFormRadioSelectInputField,
-  KnFormInnerFormInputField, KnFormDialogProps, KnFormTextLinesInputField, KnFormComputedInputField
+  KnFormInnerFormInputField,
+  KnFormDialogProps,
+  KnFormTextLinesInputField,
+  KnFormComputedInputField,
+  KnFormToggleSelectInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 import type { DialogChainObject, QVueGlobals } from 'quasar'
@@ -74,6 +78,13 @@ function defineKnFormRadioSelectField<OptionType extends KnSelectDefaultOptionTy
   return Object.assign(options, { dataKey, dataType: 'radio_select' } as DTAppend) as KnFormRadioSelectInputField<OptionType>
 }
 
+function defineKnFormToggleSelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
+  dataKey: string,
+  options: Omit<KnFormToggleSelectInputField, 'dataType' | 'dataKey'>
+): KnFormToggleSelectInputField<OptionType> {
+  return Object.assign(options, { dataKey, dataType: 'toggle_select' } as DTAppend) as KnFormToggleSelectInputField<OptionType>
+}
+
 function defineKnFormLazySelectField<
   ServiceType extends AbstractLazyResourceService,
 >(
@@ -111,6 +122,7 @@ export default {
   float: defineKnFormFloatField,
   textLines: defineKnFormTextLinesField,
   select: defineKnFormSelectField,
+  toggleSelect: defineKnFormToggleSelectField,
   radioSelect: defineKnFormRadioSelectField,
   lazySelect: defineKnFormLazySelectField,
   innerForm: defineKnFormInnerFormField,
