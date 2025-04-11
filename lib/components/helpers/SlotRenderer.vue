@@ -51,6 +51,8 @@ const slotData = computed<KnFieldSlotDataObject | undefined>(() => {
     v-else-if="slotData.component"
     :is="slotData.component"
     v-bind="slotData.componentProps"
+    v-model="model"
+    v-model:all-data="allData"
     :class="slotData.cls"
   />
 </template>

@@ -20,9 +20,9 @@ const { usedSlots } = useQuasarKnSlots(props)
   <div>
     <q-input
       :class="{'kn-form-no-spin-input': !showSpinButtons}"
+      :min="min" :max="max" :step="step"
       v-model.number="model" :label="props.label"
       v-bind="props.inputProps" type="number"
-      :min="min" :max="max" :step="step"
     >
       <template v-for="[quasarSlot, knSlot] in usedSlots" #[quasarSlot]>
         <slot-renderer :slot-data="slots?.[knSlot]" />

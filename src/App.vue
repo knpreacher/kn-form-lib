@@ -3,6 +3,8 @@ import { ref, useTemplateRef } from 'vue'
 import { KnFormLayout, KnFormDialog, kn, service, types, LazyListView, RULES, type KnFormLayoutExpose } from '../lib'
 
 import { Dialog, QBtn, useQuasar } from 'quasar'
+import TestCustomComponent from './TestCustomComponent.vue'
+import TestCustomFormComponent from './TestCustomFormComponent.vue'
 
 const testData = ref({
   label: 'loooool',
@@ -111,7 +113,10 @@ const formLayout = kn.form({
             appendInner: '!!!lol',
             prependInner: '!!!lol',
           },
-          getter: (allData) => allData.name.toUpperCase(),
+          getter: (allData) => allData.name?.toUpperCase() ?? ' --- no text --- ',
+        }),
+        kn.custom('custom_age', {
+          mountComponent: TestCustomComponent
         }),
         kn.textLines('lines', {
           showIf: (allData) => {
@@ -149,6 +154,10 @@ const formLayout = kn.form({
           //     rules.required()
           //   ]
           // }
+        }),
+        kn.custom('custom_age_form', {
+          mountComponent: TestCustomFormComponent,
+          formAsModel: true
         }),
         kn.float('weight', {
           label: 'Weight'

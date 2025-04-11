@@ -13,7 +13,7 @@ import type {
   KnFormDialogProps,
   KnFormTextLinesInputField,
   KnFormComputedInputField,
-  KnFormToggleSelectInputField, KnFormToggleBoolInputField
+  KnFormToggleSelectInputField, KnFormToggleBoolInputField, KnFormCustomInputField
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 import type { DialogChainObject, QVueGlobals } from 'quasar'
@@ -22,6 +22,12 @@ import KnFormDialog from '../components/KnFormDialog.vue'
 
 type DTAppend = { dataType: KnFormDataType, dataKey: string }
 
+function defineKnFormCustomField(
+  dataKey: string,
+  options: Omit<KnFormCustomInputField, 'dataType' | 'dataKey'>
+): KnFormCustomInputField {
+  return Object.assign(options, { dataKey, dataType: 'custom' } as DTAppend) as KnFormCustomInputField
+}
 function defineKnFormLabelField(
   dataKey: string,
   options: Omit<KnFormLabelInputField, 'dataType' | 'dataKey'>
@@ -122,6 +128,7 @@ function defineKnFormDialog(options: KnFormDialogProps, $q?: QVueGlobals): Dialo
 }
 
 export default {
+  custom: defineKnFormCustomField,
   label: defineKnFormLabelField,
   computed: defineKnFormComputedField,
   string: defineKnFormStringField,

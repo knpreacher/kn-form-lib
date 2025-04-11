@@ -49,6 +49,7 @@ export declare type DomExtraProps = Partial<{
 
 export declare type KnFormDataType =
   | 'label'
+  | 'custom'
   | 'computed'
   | 'str'
   | 'int'
@@ -167,6 +168,20 @@ export declare type KnFormInputProps<
 
 export declare type PreparedQuasarFieldProps<T extends { label?: string, modelValue?: any }> =
   Omit<T, 'label' | 'modelValue'>
+/**
+ * Custom input field
+ */
+export declare type KnFormCustomInputField<Props extends {} = {}> = KnFormAbstractField<
+  'custom'
+> & {
+  mountComponent: any,
+  mountComponentProps?: Props
+  formAsModel?: boolean
+} & FieldHasCustomValidationProps
+export declare type KnFormCustomInputFieldProps<Props extends {} = {}> = KnFormInputProps<
+  KnFormCustomInputField<Props>,
+  any
+>
 /**
  * Label input field
  */
@@ -361,6 +376,7 @@ export declare type KnFormInnerFormInputFieldProps = KnFormInputProps<
  * All
  */
 export declare type KnFormAnyField =
+  KnFormCustomInputField
   | KnFormLabelInputField
   | KnFormComputedInputField
   | KnFormStringInputField
@@ -374,6 +390,7 @@ export declare type KnFormAnyField =
   | KnFormLazySelectInputField
   | KnFormInnerFormInputField
 export declare type KnFormAnyFieldProps =
+  KnFormCustomInputFieldProps
   | KnFormLabelInputFieldProps
   | KnFormComputedInputFieldProps
   | KnFormStringInputFieldProps

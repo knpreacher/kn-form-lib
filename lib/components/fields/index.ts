@@ -1,4 +1,5 @@
 import KnFormLabelInputField from './KnFormLabelInputField.vue'
+import KnFormCustomInputField from './KnFormCustomInputField.vue'
 import KnFormComputedInputField from './KnFormComputedInputField.vue'
 import KnFormStringInputField from './KnFormStringInputField.vue'
 import KnFormIntInputField from './KnFormIntInputField.vue'
@@ -13,6 +14,7 @@ import KnFormInnerFormInputField from './KnFormInnerFormInputField.vue'
 import KnFormUnknownInputField from './KnFormUnknownInputField.vue'
 
 export {
+  KnFormCustomInputField,
   KnFormLabelInputField,
   KnFormComputedInputField,
   KnFormStringInputField,

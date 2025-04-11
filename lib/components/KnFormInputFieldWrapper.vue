@@ -74,8 +74,8 @@ const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : prop
         v-if="toggled" v-bind="fieldProps as {}"
         :label="bindLabel"
         :field-defaults="fieldDefaults"
-        :all-data="allData"
-        :is="componentToBeMount" v-model="model"
+        :is="componentToBeMount"
+        v-model="model" v-model:all-data="allData"
       />
     </div>
     <div class="kn-form-input-field-wrapper__inner" :class="innerClass" v-else>
@@ -112,8 +112,8 @@ const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : prop
         v-bind="fieldProps"
         :label="bindLabel"
         :field-defaults="fieldDefaults"
-        :all-data="allData"
-        :is="componentToBeMount" v-model="model"
+        :is="componentToBeMount"
+        v-model="model" v-model:all-data="allData"
       />
     </div>
     <div class="kn-form-input-field-wrapper__footer">
