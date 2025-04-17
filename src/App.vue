@@ -70,7 +70,8 @@ const formLayout = kn.form({
   useActionButtons: true,
   actionButtonsGutterSize: 'lg',
   submitButtonProps: {
-    label: 'Submit'
+    label: 'Submit',
+    class: 'fit'
   },
   resetButtonProps: {
     label: 'Reset'
@@ -246,6 +247,10 @@ function showDialog() {
   // })
 }
 
+function onFormSubmit() {
+  console.log('onFormSubmit')
+}
+
 function validateForm() {
   console.log('validateForm', knFormRef.value)
   console.log(knFormRef.value?.getValidationComponents())
@@ -272,7 +277,7 @@ function validateForm() {
     <div>
       <q-btn label="Dialog" @click="showDialog" />
     </div>
-    <kn-form-layout v-bind="formLayout" v-model="testData" ref="form" />
+    <kn-form-layout v-bind="formLayout" v-model="testData" ref="form" @submit="onFormSubmit" />
     <q-btn label="Validate" @click="validateForm" />
   </div>
 </template>

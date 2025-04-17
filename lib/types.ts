@@ -433,7 +433,9 @@ export interface KnFormFieldGroupProps extends KnFormFieldGroup {
   headerPadding?: ScreenBreakpoint
 }
 
-export type PreparedQuasarFormButton = Omit<QBtnProps, 'type' | 'disable' | 'onClick' | 'to' | 'target' | 'href'>
+export type PreparedQuasarFormButton = Omit<QBtnProps, 'type' | 'disable' | 'onClick' | 'to' | 'target' | 'href'> & {
+  class?: VueClassProp
+}
 
 export interface KnFormLayoutData {
   /**

@@ -45,14 +45,17 @@ function exposedSubmit() {
   formRef.value?.submit()
 }
 
-function onFormSubmit() {
+function onFormSubmit(e: Event) {
+  if (!(e instanceof SubmitEvent)) {
+    if (props.disableValidationOnSubmit) {
+      emit('submit', model.value)
+    }
+    return
+  }
   const data = model.value
   isDebug && console.log('SUBMIT', data)
   emit('submitBeforeValidate', data)
-  if (props.disableValidationOnSubmit) {
-    emit('submit', model.value)
-    return
-  }
+
   validate(true)?.then(value => {
     if (!value) return
     emit('submit', data)
@@ -106,7 +109,7 @@ defineSlots<{
 <template>
   <q-form
     ref="formRef"
-    class="kn-form-layout" @submit="onFormSubmit"
+    class="kn-form-layout" @submit.prevent.stop="onFormSubmit"
   >
     <slot name="before"></slot>
     <kn-form-input-group
