@@ -1,8 +1,11 @@
 <script lang="ts" setup
         generic="OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType, ValueType = any">
-import type { KnFormSelectInputFieldProps, KnSelectDefaultOptionType } from '../../types'
+import type {
+  KnFormSelectManyInputFieldProps,
+  KnSelectDefaultOptionType
+} from '../../types'
 import { type VModelEmitter } from '../../utils/useVModel'
-import { type QItemProps, QSelect, QItem, QItemSection, QItemLabel, QIcon } from 'quasar'
+import { type QItemProps, QSelect, QItem, QItemSection, QItemLabel, QIcon, QCheckbox } from 'quasar'
 import { useKnFormField } from '../../helpers/useHelpers.ts'
 import SlotRenderer from '../helpers/SlotRenderer.vue'
 import { useQuasarKnSlots } from '../../utils/quasarSlotUtils.ts'
@@ -11,14 +14,16 @@ interface OptionSlotScope {
   index: number,
   opt: OptionType,
   itemProps: QItemProps,
+  selected: boolean,
+  toggleOption: (opt: OptionType) => void
 }
 
 defineOptions({
-  name: 'KnFormSelectInputField'
+  name: 'KnFormSelectManyInputField'
 })
 
-const props = withDefaults(defineProps<KnFormSelectInputFieldProps<OptionType, ValueType>>(), {})
-const emit = defineEmits<VModelEmitter<ValueType[]>>()
+const props = withDefaults(defineProps<KnFormSelectManyInputFieldProps<OptionType, ValueType>>(), {})
+const emit = defineEmits<VModelEmitter<ValueType>>()
 
 const { model } = useKnFormField(props, emit)
 const { usedSlots } = useQuasarKnSlots(props)
@@ -36,16 +41,19 @@ const displayOptionText = (o: OptionType): string => {
             option-value="value"
             option-label="label"
             option-disable="disable"
+            multiple map-options
             :options="options"
             v-bind="inputProps"
-            :map-options="returnObject"
             :emit-value="!returnObject"
   >
     <template v-for="[quasarSlot, knSlot] in usedSlots" #[quasarSlot]>
       <slot-renderer :slot-data="slots?.[knSlot]" />
     </template>
-    <template #option="{opt, itemProps}: OptionSlotScope">
+    <template #option="{opt, itemProps, selected, toggleOption}: OptionSlotScope">
       <q-item v-bind="itemProps">
+        <q-item-section side>
+          <q-checkbox :model-value="selected" dense @update:model-value="toggleOption(opt)" />
+        </q-item-section>
         <q-item-section avatar v-if="opt.leftIcon">
           <q-icon v-bind="opt.leftIcon" />
         </q-item-section>

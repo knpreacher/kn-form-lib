@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {QField} from 'quasar'
-import { computed } from 'vue'
+import { QField } from 'quasar'
+import { computed, watch } from 'vue'
 import type {
   KnFormComputedInputFieldProps
 } from '../../types'
@@ -13,20 +13,28 @@ defineOptions({
 
 const props = defineProps<KnFormComputedInputFieldProps>()
 
-const model = computed(()=>props.getter(props.allData))
+const model = defineModel<any>()
+
+const getterModel = computed(() => props.getter(props.allData))
+
+if (props.syncModel) {
+  watch(getterModel, (value) => {
+    model.value = value
+  })
+}
 
 const {usedSlots} = useQuasarKnSlots(props)
 
 </script>
 <template>
-  <q-field v-model="model" :label="label" v-bind="inputProps">
+  <q-field v-model="getterModel" :label="label" v-bind="inputProps">
     <template #control>
       <slot>
-        <div v-text="model"></div>
+        <div v-text="getterModel"></div>
       </slot>
     </template>
     <template v-for="[quasarSlot, knSlot] in usedSlots" #[quasarSlot]>
-      <slot-renderer :slot-data="slots?.[knSlot]" />
+      <slot-renderer :slot-data="slots?.[knSlot]"/>
     </template>
   </q-field>
 </template>

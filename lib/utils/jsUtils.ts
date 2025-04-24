@@ -135,4 +135,13 @@ function deepJoinObjects<Type = unknown>(...objs: Type[]): Type {
   return result
 }
 
-export { deepJoinObjects, copyObject, deepClone, isPlainObject, isEmpty }
+function styleValue(value?: string | number) {
+  if (typeof value === 'number') {
+    return `${value}px`
+  } else if (typeof value === 'string') {
+    return value
+  }
+  return undefined
+}
+
+export { deepJoinObjects, copyObject, deepClone, isPlainObject, isEmpty, styleValue }

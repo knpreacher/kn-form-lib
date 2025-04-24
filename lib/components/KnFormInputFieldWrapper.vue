@@ -5,14 +5,14 @@ import {
   type VModelEmitter,
   type VModelProps
 } from '../utils/useVModel.ts'
-import type { KnFormAnyFieldProps, SharedKnFormFieldData } from '../types.ts'
+import type { KnFormAnyFieldProps, SharedKnFormFieldData, SimpleGridProps } from '../types.ts'
 import type { QToggleProps, VueClassProp } from 'quasar'
 import { QToggle, QSpace } from 'quasar'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, type StyleValue, watch } from 'vue'
 import KnFormUnknownInputField from '../components/fields/KnFormUnknownInputField.vue'
 import { TYPE_COMPONENT_MAP } from '../utils/fieldTypeMap.ts'
 import { getGridClass } from '../utils/formUtils.ts'
-import { isEmpty } from '../utils/jsUtils'
+import { isEmpty, styleValue } from '../utils/jsUtils'
 import SlotRenderer from './helpers/SlotRenderer.vue'
 
 defineOptions({
@@ -23,13 +23,14 @@ const props = defineProps<{
   // fieldProps: Omit<FieldProps, 'modelValue'>,
   fieldProps: FieldProps,
   fieldDefaults?: Omit<SharedKnFormFieldData, 'dataType'>,
+  simpleGrid?: SimpleGridProps | boolean
 } & VModelProps<ValueType>>()
 const emit = defineEmits<VModelEmitter<ValueType>>()
-const { fieldProps } = props
+const {fieldProps} = props
 
 const allData = defineModel<Record<string, any>>('allData')
 
-const { model } = useVModel<ValueType>(props, emit, fieldProps.defaultValue)
+const {model} = useVModel<ValueType>(props, emit, fieldProps.defaultValue)
 // const {model: allData} = useSyncPropMixin<'allData', Record<string, any>>(props, emit, 'allData')
 
 const toggleProps: Omit<QToggleProps, 'modelValue'> | undefined =
@@ -52,10 +53,23 @@ watch(toggled, (value) => {
     model.value = fieldProps.untoggledValue as ValueType
   }
 })
-
+const isSpace = fieldProps.dataType === 'space'
 const componentToBeMount: any = TYPE_COMPONENT_MAP[fieldProps.dataType] ?? KnFormUnknownInputField
 
-const columnClass = getGridClass(fieldProps.gridSize)
+const columnClass = props.simpleGrid ? {
+  [`self-${fieldProps.flex?.align}`]: fieldProps.flex?.align,
+  'fit': fieldProps.flex?.fit
+} : getGridClass(fieldProps.gridSize)
+
+const columnStyle: StyleValue = fieldProps.flex ? {
+  flexBasis: styleValue(fieldProps.flex.basis),
+  flexGrow: fieldProps.flex.grow,
+  flexShrink: fieldProps.flex.shrink,
+  width: styleValue(fieldProps.flex.width),
+  maxWidth: styleValue(fieldProps.flex.maxWidth),
+  height: styleValue(fieldProps.flex.height),
+  maxHeight: styleValue(fieldProps.flex.maxHeight)
+} : {}
 
 const innerClass = computed<VueClassProp | undefined>(() => {
   if (!fieldProps.inlineOutLabel) return undefined
@@ -67,9 +81,10 @@ const innerClass = computed<VueClassProp | undefined>(() => {
 const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : props.fieldProps.label)
 </script>
 <template>
-  <div class="kn-form-input-field-wrapper" :class="columnClass">
+  <q-space v-if="isSpace" :class="columnClass" :style="columnStyle" />
+  <div v-else class="kn-form-input-field-wrapper" :class="columnClass" :style="columnStyle">
     <div v-if="useToggle">
-      <q-toggle v-model="toggled" v-bind="toggleProps" />
+      <q-toggle v-model="toggled" v-bind="toggleProps"/>
       <component
         v-if="toggled" v-bind="fieldProps as {}"
         :label="bindLabel"
@@ -100,14 +115,14 @@ const bindLabel = computed(() => props.fieldProps.useOutLabel ? undefined : prop
           :model-value="model"
           :all-data="allData"
         />
-        <q-space />
+        <q-space/>
         <slot-renderer
           :slot-data="fieldProps.slots?.outLabelAppendSide"
           :model-value="model"
           :all-data="allData"
         />
       </div>
-      <q-space />
+      <q-space/>
       <component
         v-bind="fieldProps"
         :label="bindLabel"

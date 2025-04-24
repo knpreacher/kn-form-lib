@@ -13,7 +13,11 @@ import type {
   KnFormDialogProps,
   KnFormTextLinesInputField,
   KnFormComputedInputField,
-  KnFormToggleSelectInputField, KnFormToggleBoolInputField, KnFormCustomInputField
+  KnFormToggleSelectInputField,
+  KnFormToggleBoolInputField,
+  KnFormCustomInputField,
+  KnFormSelectManyInputField,
+  KnFormGridSpace
 } from '../types.ts'
 import type { AbstractLazyResourceService } from '../utils/lazyResourceService'
 import type { DialogChainObject, QVueGlobals } from 'quasar'
@@ -22,6 +26,12 @@ import KnFormDialog from '../components/KnFormDialog.vue'
 
 type DTAppend = { dataType: KnFormDataType, dataKey: string }
 
+function defineKnFormFieldSpace(
+  dataKey: string,
+  options?: Omit<KnFormLabelInputField, 'dataType' | 'dataKey'>
+): KnFormGridSpace {
+  return Object.assign(options ?? {}, { dataKey, dataType: 'space' } as DTAppend) as KnFormGridSpace
+}
 function defineKnFormCustomField(
   dataKey: string,
   options: Omit<KnFormCustomInputField, 'dataType' | 'dataKey'>
@@ -84,6 +94,13 @@ function defineKnFormSelectField<OptionType extends KnSelectDefaultOptionType = 
   return Object.assign(options, { dataKey, dataType: 'select' } as DTAppend) as KnFormSelectInputField<OptionType>
 }
 
+function defineKnFormSelectManyField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
+  dataKey: string,
+  options: Omit<KnFormSelectInputField, 'dataType' | 'dataKey'>
+): KnFormSelectManyInputField<OptionType> {
+  return Object.assign(options, { dataKey, dataType: 'select_many' } as DTAppend) as KnFormSelectManyInputField<OptionType>
+}
+
 function defineKnFormRadioSelectField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType>(
   dataKey: string,
   options: Omit<KnFormRadioSelectInputField, 'dataType' | 'dataKey'>
@@ -128,6 +145,7 @@ function defineKnFormDialog(options: KnFormDialogProps, $q?: QVueGlobals): Dialo
 }
 
 export default {
+  space: defineKnFormFieldSpace,
   custom: defineKnFormCustomField,
   label: defineKnFormLabelField,
   computed: defineKnFormComputedField,
@@ -137,6 +155,7 @@ export default {
   toggleBool: defineKnFormToggleBoolField,
   textLines: defineKnFormTextLinesField,
   select: defineKnFormSelectField,
+  selectMany: defineKnFormSelectManyField,
   toggleSelect: defineKnFormToggleSelectField,
   radioSelect: defineKnFormRadioSelectField,
   lazySelect: defineKnFormLazySelectField,

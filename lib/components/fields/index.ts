@@ -7,6 +7,7 @@ import KnFormFloatInputField from './KnFormFloatInputField.vue'
 import KnFormToggleBoolInputField from './KnFormToggleBoolInputField.vue'
 import KnFormTextLinesInputField from './KnFormTextLinesInputField.vue'
 import KnFormSelectInputField from './KnFormSelectInputField.vue'
+import KnFormSelectManyInputField from './KnFormSelectManyInputField.vue'
 import KnFormToggleSelectInputField from './KnFormToggleSelectInputField.vue'
 import KnFormRadioSelectInputField from './KnFormRadioSelectInputField.vue'
 import KnFormLazySelectInputField from './KnFormLazySelectInputField.vue'
@@ -23,6 +24,7 @@ export {
   KnFormToggleBoolInputField,
   KnFormTextLinesInputField,
   KnFormSelectInputField,
+  KnFormSelectManyInputField,
   KnFormToggleSelectInputField,
   KnFormRadioSelectInputField,
   KnFormLazySelectInputField,

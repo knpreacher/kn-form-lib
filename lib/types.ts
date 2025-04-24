@@ -23,11 +23,38 @@ export declare type FlexItemsAlign =
   | 'stretch'
   | 'baseline'
 
+export declare type FlexItemsJustify =
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly'
+
 export declare type GridSizeProps = Partial<{
   [key in ScreenBreakpoint]: ScreenBreakpointSize | undefined
 }> & {
   fit?: boolean
 }
+
+export declare type SimpleGridProps = Partial<{
+  align: FlexItemsAlign,
+  justify: FlexItemsJustify,
+  wrap: boolean
+}>
+
+export declare type SelfSimpleGridProps = Partial<{
+  align: FlexItemsAlign,
+  fit: boolean,
+  grow: number,
+  shrink: number,
+  width: 'auto' | number
+  maxWidth: 'auto' | number
+  minWidth: 'auto' | number
+  height: 'auto' | number
+  maxHeight: 'auto' | number
+  basis: 'auto' | number
+}>
 
 export interface GutterSizeObject {
   x?: ScreenBreakpointSize
@@ -40,7 +67,8 @@ export declare type GutterSizeProps = GutterSizeObject | ScreenBreakpoint
  */
 export declare type DomExtraProps = Partial<{
   bindAttrs: Record<string, unknown>
-  itemClass: VueClassProp
+  wrapperClass: VueClassProp,
+  fieldClass: VueClassProp,
 }>
 
 /**
@@ -49,6 +77,7 @@ export declare type DomExtraProps = Partial<{
 
 export declare type KnFormDataType =
   | 'label'
+  | 'space' // grid space
   | 'custom'
   | 'computed'
   | 'str'
@@ -59,6 +88,7 @@ export declare type KnFormDataType =
   | 'bool_toggle'
   | 'text_lines'
   | 'select'
+  | 'select_many'
   | 'radio_select'
   | 'toggle_select'
   | 'select_lazy'
@@ -116,6 +146,7 @@ type DefaultCommonSlotNames =
 export type ExtractSlotNames<T extends Pick<KnFormAbstractField, 'slots'>> = keyof (Required<Required<Pick<T, 'slots'>>>['slots'])
 
 export type KnFieldSlots<SlotNames extends string = DefaultCommonSlotNames> = Partial<Record<SlotNames, KnFieldSlotData | string>>
+
 export interface KnFormAbstractField<
   DataType extends KnFormDataType = 'label',
   InputPropsType = Record<string, any>,
@@ -143,7 +174,10 @@ export interface KnFormAbstractField<
 
   prepareValue?: <In = any, Out = any>(value: In) => Out
 
-  showIf?: FieldShowConditionFunction<Record<string, any>>
+  showIf?: FieldShowConditionFunction<Record<string, any>>,
+  domExtra?: DomExtraProps,
+  flex?: SelfSimpleGridProps
+
 
   inputProps?: InputPropsType,
   slots?: KnFieldSlots<SlotNames>
@@ -191,14 +225,24 @@ export declare type KnFormLabelInputFieldProps = KnFormInputProps<
   string
 >
 /**
+ * Space like field
+ */
+export declare type KnFormGridSpace = KnFormAbstractField<'space', {}>
+export declare type KnFormGridSpaceProps = KnFormInputProps<
+  KnFormGridSpace,
+  undefined
+>
+/**
  * Computed input field
  */
 export declare type KnFormComputedInputField = KnFormAbstractField<
   'computed',
   PreparedQuasarFieldProps<QFieldProps>
 > & {
-  getter: (allData: Record<string, any> | undefined) => any
+  getter: <DataType extends {}>(allData: DataType | undefined) => any,
+  syncModel?: boolean
 }
+
 export declare type KnFormComputedInputFieldProps = KnFormInputProps<
   KnFormComputedInputField,
   any
@@ -292,6 +336,25 @@ export declare type KnFormSelectInputFieldProps<
   ValueType = any
 > = KnFormInputProps<
   KnFormSelectInputField<OptionType>,
+  ValueType[]
+>
+/**
+ * Select many input field
+ */
+export declare type KnFormSelectManyInputField<OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType> =
+  KnFormAbstractField<
+    'select_many',
+    PreparedQuasarFieldProps<Omit<QSelectProps, 'options' | 'mapOptions'>>
+  >
+  & {
+  options: OptionType[],
+  returnObject?: boolean,
+}
+export declare type KnFormSelectManyInputFieldProps<
+  OptionType extends KnSelectDefaultOptionType = KnSelectDefaultOptionType,
+  ValueType = any
+> = KnFormInputProps<
+  KnFormSelectManyInputField<OptionType>,
   ValueType
 >
 /**
@@ -376,7 +439,8 @@ export declare type KnFormInnerFormInputFieldProps = KnFormInputProps<
  * All
  */
 export declare type KnFormAnyField =
-  KnFormCustomInputField
+  KnFormGridSpace
+  | KnFormCustomInputField
   | KnFormLabelInputField
   | KnFormComputedInputField
   | KnFormStringInputField
@@ -385,12 +449,14 @@ export declare type KnFormAnyField =
   | KnFormToggleBoolInputField
   | KnFormTextLinesInputField
   | KnFormSelectInputField
+  | KnFormSelectManyInputField
   | KnFormToggleSelectInputField
   | KnFormRadioSelectInputField
   | KnFormLazySelectInputField
   | KnFormInnerFormInputField
 export declare type KnFormAnyFieldProps =
-  KnFormCustomInputFieldProps
+  KnFormGridSpaceProps
+  | KnFormCustomInputFieldProps
   | KnFormLabelInputFieldProps
   | KnFormComputedInputFieldProps
   | KnFormStringInputFieldProps
@@ -399,6 +465,7 @@ export declare type KnFormAnyFieldProps =
   | KnFormToggleBoolInputFieldProps
   | KnFormTextLinesInputFieldProps
   | KnFormSelectInputFieldProps
+  | KnFormSelectManyInputFieldProps
   | KnFormToggleSelectInputFieldProps
   | KnFormRadioSelectInputFieldProps
   | KnFormLazySelectInputFieldProps
@@ -418,6 +485,7 @@ export interface KnFormFieldGroup {
    * Pass as default to all fields
    */
   gridSize?: GridSizeProps
+  simpleGrid?: SimpleGridProps | boolean
   gutterSize?: GutterSizeProps
 
   /**

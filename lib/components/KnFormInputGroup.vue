@@ -2,7 +2,7 @@
 import type {
   GutterSizeObject,
   KnFormFieldGroupProps,
-  KnFormModelData
+  KnFormModelData, SimpleGridProps
 } from '../types.ts'
 import { useVModel, type VModelEmitter, type VModelProps } from '../utils/useVModel.ts'
 import type { VueClassObjectProp } from 'quasar'
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<KnFormFieldGroupProps & VModelProps<KnFor
 })
 const emit = defineEmits<VModelEmitter<KnFormModelData>>()
 
-const { model } = useVModel(props, emit)
+const {model} = useVModel(props, emit)
 const expanded = ref(props.expandable ? props.expanded : true)
 
 const fields = computed(
@@ -35,20 +35,34 @@ const fields = computed(
 
 const getGutterClasses: () => VueClassObjectProp = () => {
   if (!props.gutterSize) return {}
+  const appendColCls = props.simpleGrid ? '' : '-col'
   if (typeof props.gutterSize === 'string') return {
-    [`q-col-gutter-${props.gutterSize}`]: true
+    [`q${appendColCls}-gutter-${props.gutterSize}`]: true
   }
   return {
-    [`q-col-gutter-x-${(props.gutterSize as GutterSizeObject)?.x}`]: true,
-    [`q-col-gutter-y-${(props.gutterSize as GutterSizeObject)?.y}`]: true
+    [`q${appendColCls}-gutter-x-${(props.gutterSize as GutterSizeObject)?.x}`]: true,
+    [`q${appendColCls}-y-${(props.gutterSize as GutterSizeObject)?.y}`]: true
   }
+}
+
+const simpleGridClasses: () => VueClassObjectProp = () => {
+  if (!props.simpleGrid) return {}
+  if (typeof props.simpleGrid === 'boolean') return {}
+  const gridProps = props.simpleGrid as SimpleGridProps
+  return {
+    [`items-${gridProps.align}`]: true,
+    [`justify-${gridProps.justify}`]: true,
+    [`wrap`]: gridProps.wrap
+  }
+
 }
 
 const fieldRowClasses: VueClassObjectProp = {
   ...(props.headerPadding ? {
     [`q-mt-${props.headerPadding}`]: true
   } : {}),
-  ...getGutterClasses()
+  ...getGutterClasses(),
+  ...simpleGridClasses()
 }
 </script>
 <template>
@@ -63,6 +77,7 @@ const fieldRowClasses: VueClassObjectProp = {
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
         :all-data="model"
+        :simple-grid="simpleGrid"
         :field-defaults="fieldDefaults"
         :field-props="f"
       />
@@ -70,7 +85,7 @@ const fieldRowClasses: VueClassObjectProp = {
   </q-expansion-item>
   <div class="kn-form-input-group" v-else>
     <div class="row items-center full-width q-gutter-x-sm kn-form-input-group__header">
-      <q-icon v-if="props.iconProps" v-bind="props.iconProps" />
+      <q-icon v-if="props.iconProps" v-bind="props.iconProps"/>
       <div v-if="label" class="kn-form-input-group__label" v-html="label"></div>
     </div>
     <div class="row" :class="fieldRowClasses">
@@ -78,6 +93,7 @@ const fieldRowClasses: VueClassObjectProp = {
         v-for="f in fields" :key="f.dataKey"
         v-model="model[f.dataKey]"
         :all-data="model"
+        :simple-grid="simpleGrid"
         :field-defaults="fieldDefaults"
         :field-props="f"
       />

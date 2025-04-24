@@ -80,6 +80,9 @@ const formLayout = kn.form({
     expandable: true,
     expanded: true,
     gutterSize: 'md',
+    simpleGrid: {
+      align: 'start',
+    },
     fieldDefaults: {
       useOutLabel: true,
       gridSize: {
@@ -102,8 +105,34 @@ const formLayout = kn.form({
       fields: [
         kn.string('name', {
           wrapToggle: true,
+          flex: {
+            fit: true,
+            maxWidth: 400
+          },
           // showIf: (allData) => allData.age > 10,
           label: 'Name'
+        }),
+        kn.selectMany('select_many', {
+          label: 'select many',
+          options: [
+            {
+              value: 'a',
+              label: 'A'
+            },
+            {
+              value: 'b',
+              label: 'B'
+            },
+            {
+              value: 'c',
+              label: 'C'
+            }
+          ]
+        }),
+        kn.space('sp_1', {
+          flex: {
+            fit: true,
+          }
         }),
         kn.computed('name_upper', {
           slots: {

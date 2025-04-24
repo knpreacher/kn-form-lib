@@ -1,6 +1,6 @@
 {
   "name": "kn-form",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
